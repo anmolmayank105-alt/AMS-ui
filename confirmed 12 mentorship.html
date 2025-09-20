@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mentorship - ALUMNETICS | Guide & Grow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .card-hover { transition: transform .2s ease, box-shadow .2s ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(2,6,23,.08); }
+    .tab { border:1px solid rgba(99,102,241,.25); }
+    .tab.active { background: linear-gradient(135deg,#6366f1,#06b6d4); color:#fff; border-color: transparent; }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50">
+  <!-- Header -->
+  <header class="bg-white/80 backdrop-blur border-b border-gray-100 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <img src="logo.jpeg" alt="ALUMNETICS" class="w-10 h-10 rounded-lg object-contain" />
+          <div>
+            <div class="text-xs text-gray-500 leading-tight">AlumNetics</div>
+            <div class="text-lg font-semibold text-gray-900 leading-tight">Mentorship</div>
+          </div>
+        </div>
+        <button onclick="window.location.href='confirmed 5 alumni dashboard.html'" class="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg flex items-center">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          Back to Dashboard
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Intro -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+    <div class="bg-gradient-to-r from-indigo-600 to-cyan-600 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
+      <div class="absolute inset-0 opacity-10">
+        <div class="grid grid-cols-8 gap-4 p-4">
+          <div class="w-2 h-2 bg-white rounded-full"></div>
+          <div class="w-2 h-2 bg-white rounded-full"></div>
+          <div class="w-2 h-2 bg-white rounded-full"></div>
+          <div class="w-2 h-2 bg-white rounded-full"></div>
+          <div class="w-2 h-2 bg-white rounded-full"></div>
+          <div class="w-2 h-2 bg-white rounded-full"></div>
+          <div class="w-2 h-2 bg-white rounded-full"></div>
+          <div class="w-2 h-2 bg-white rounded-full"></div>
+        </div>
+      </div>
+      <div class="relative z-10">
+        <h1 class="text-2xl md:text-3xl font-extrabold">Guide Students. Grow Careers.</h1>
+        <p class="text-indigo-100 mt-1">Offer mentorship or request guidance. Connect through structured programs or ad‑hoc sessions.</p>
+        <div class="mt-4 flex gap-2">
+          <button class="px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30">Become a Mentor</button>
+          <button class="px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30">Find a Mentor</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tabs -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+    <div class="flex items-center gap-2">
+      <button id="tab-mentors" class="tab px-4 py-2 rounded-lg text-sm font-medium">Mentors</button>
+      <button id="tab-mentees" class="tab px-4 py-2 rounded-lg text-sm font-medium">Mentees</button>
+      <button id="tab-programs" class="tab px-4 py-2 rounded-lg text-sm font-medium">Programs</button>
+      <div class="ml-auto flex gap-2">
+        <button class="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm font-medium shadow-md hover:shadow-lg">Create Program</button>
+        <button class="px-4 py-2 rounded-lg border border-purple-200 text-purple-700 bg-purple-50 hover:bg-purple-100 text-sm font-medium">My Requests</button>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 pb-12">
+    <!-- Mentors -->
+    <div id="list-mentors" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <article class="bg-white rounded-2xl border border-gray-100 p-5 card-hover">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 text-white flex items-center justify-center font-semibold">KD</div>
+          <div>
+            <h3 class="font-semibold text-gray-900">Kaurani Divya</h3>
+            <div class="text-sm text-gray-600">SWE • York IE</div>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600">React, Node, AWS • Open for weekly 30-min sessions</p>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <span class="px-2 py-1 text-xs rounded bg-blue-50 text-blue-700">Frontend</span>
+          <span class="px-2 py-1 text-xs rounded bg-emerald-50 text-emerald-700">Career</span>
+        </div>
+        <div class="mt-4 flex gap-2">
+          <button class="px-3 py-2 rounded-lg bg-indigo-600 text-white text-sm">Request</button>
+          <button class="px-3 py-2 rounded-lg border text-sm">Message</button>
+        </div>
+      </article>
+
+      <article class="bg-white rounded-2xl border border-gray-100 p-5 card-hover">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-fuchsia-500 to-pink-600 text-white flex items-center justify-center font-semibold">SM</div>
+          <div>
+            <h3 class="font-semibold text-gray-900">Sarah Mitchell</h3>
+            <div class="text-sm text-gray-600">SWE • Google</div>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600">System design, interview prep • Bi-weekly sessions</p>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <span class="px-2 py-1 text-xs rounded bg-purple-50 text-purple-700">System Design</span>
+          <span class="px-2 py-1 text-xs rounded bg-amber-50 text-amber-700">Interview</span>
+        </div>
+        <div class="mt-4 flex gap-2">
+          <button class="px-3 py-2 rounded-lg bg-indigo-600 text-white text-sm">Request</button>
+          <button class="px-3 py-2 rounded-lg border text-sm">Message</button>
+        </div>
+      </article>
+    </div>
+
+    <!-- Mentees -->
+    <div id="list-mentees" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 hidden">
+      <article class="bg-white rounded-2xl border border-gray-100 p-5 card-hover">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center font-semibold">AS</div>
+          <div>
+            <h3 class="font-semibold text-gray-900">Aarav Shah</h3>
+            <div class="text-sm text-gray-600">CS • 2025</div>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600">Looking for guidance on React career path</p>
+        <div class="mt-4 flex gap-2">
+          <button class="px-3 py-2 rounded-lg bg-indigo-600 text-white text-sm">Offer Mentorship</button>
+          <button class="px-3 py-2 rounded-lg border text-sm">Profile</button>
+        </div>
+      </article>
+    </div>
+
+    <!-- Programs -->
+    <div id="list-programs" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 hidden">
+      <article class="bg-white rounded-2xl border border-gray-100 card-hover overflow-hidden">
+        <div class="h-28 bg-gradient-to-r from-indigo-500 to-cyan-600 relative">
+          <div class="absolute bottom-3 left-4 text-white">
+            <div class="text-xs opacity-90">Monthly Cohort</div>
+            <h3 class="text-lg font-bold">Frontend Career Accelerator</h3>
+          </div>
+        </div>
+        <div class="p-5">
+          <p class="text-sm text-gray-600">4-week program with alumni mentors, live sessions, and projects.</p>
+          <div class="mt-4 flex items-center justify-between">
+            <div class="text-sm text-gray-500">👥 30 seats</div>
+            <button class="px-3 py-2 rounded-lg bg-indigo-600 text-white text-sm">Apply</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <script>
+    const tabs = {
+      mentors: document.getElementById('tab-mentors'),
+      mentees: document.getElementById('tab-mentees'),
+      programs: document.getElementById('tab-programs'),
+    };
+    const lists = {
+      mentors: document.getElementById('list-mentors'),
+      mentees: document.getElementById('list-mentees'),
+      programs: document.getElementById('list-programs'),
+    };
+
+    function setTab(name) {
+      Object.keys(tabs).forEach(k => tabs[k].classList.toggle('active', k === name));
+      Object.keys(lists).forEach(k => lists[k].classList.toggle('hidden', k !== name));
+    }
+
+    tabs.mentors.addEventListener('click', () => setTab('mentors'));
+    tabs.mentees.addEventListener('click', () => setTab('mentees'));
+    tabs.programs.addEventListener('click', () => setTab('programs'));
+    setTab('mentors');
+  </script>
+<script src="chatbot.js"></script>
+</body>
+</html>

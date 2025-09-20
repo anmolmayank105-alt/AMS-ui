@@ -1,0 +1,5 @@
+{
+  "routes": [
+    { "src": "/", "dest": "/confirmed 1 landing page.html" }
+  ]
+}

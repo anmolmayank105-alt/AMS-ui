@@ -173,7 +173,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
+                        <a href="confirmed 19 alumni job postings.html" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2h8z"></path>
                             </svg>
@@ -181,7 +181,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
+                        <a href="confirmed 20 alumni events.html" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                             </svg>
@@ -659,12 +659,23 @@
             });
         });
 
-        // Quick action: Mentorship button navigates to mentorship page if present
+        // Quick actions navigation for Mentorship, Post Job, Create Event
         document.querySelectorAll('button, a').forEach(el => {
-            if (el.textContent && el.textContent.includes('Mentorship') && el.tagName === 'BUTTON') {
-                el.addEventListener('click', () => {
-                    window.location.href = 'confirmed 12 mentorship.html';
-                });
+            const txt = (el.textContent || '').trim();
+            if (el.tagName === 'BUTTON') {
+                if (txt.includes('Mentorship')) {
+                    el.addEventListener('click', () => {
+                        window.location.href = 'confirmed 12 mentorship.html';
+                    });
+                } else if (txt.includes('Post Job')) {
+                    el.addEventListener('click', () => {
+                        window.location.href = 'confirmed 19 alumni job postings.html';
+                    });
+                } else if (txt.includes('Create Event')) {
+                    el.addEventListener('click', () => {
+                        window.location.href = 'confirmed 20 alumni events.html';
+                    });
+                }
             }
         });
 

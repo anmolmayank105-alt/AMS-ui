@@ -28,6 +28,19 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // CORS configuration - Allow all origins in development
+const allowedOrigins = [
+  'https://frontend-two-eosin-67.vercel.app',
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:3000'
+];
+
+// Add CLIENT_URL from environment if set
+if (process.env.CLIENT_URL) {
+  allowedOrigins.push(process.env.CLIENT_URL);
+}
+
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
@@ -38,8 +51,8 @@ app.use(cors({
       return callback(null, true);
     }
     
-    // In production, only allow specific origin
-    if (origin === process.env.CLIENT_URL) {
+    // Check if origin is in allowed list
+    if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
     

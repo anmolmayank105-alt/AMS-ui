@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "alumnetics-backend/server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "alumnetics-frontend/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "alumnetics-backend/server.js"
+    },
+    {
+      "src": "/health",
+      "dest": "alumnetics-backend/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "alumnetics-frontend/$1"
+    }
+  ]
+}

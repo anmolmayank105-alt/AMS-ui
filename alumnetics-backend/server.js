@@ -29,6 +29,7 @@ app.use('/api', limiter);
 
 // CORS configuration - Allow all origins in development
 const allowedOrigins = [
+  'https://ams-ui-one.vercel.app',
   'https://frontend-two-eosin-67.vercel.app',
   'http://localhost:3000',
   'http://localhost:5173',
@@ -43,7 +44,7 @@ if (process.env.CLIENT_URL) {
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
+    // Allow requests with no origin (same-origin, mobile apps, curl)
     if (!origin) return callback(null, true);
     
     // In development, allow all origins
@@ -56,7 +57,8 @@ app.use(cors({
       return callback(null, true);
     }
     
-    return callback(new Error('Not allowed by CORS'));
+    // For unified deployment, allow same domain requests
+    return callback(null, true);
   },
   credentials: true
 }));

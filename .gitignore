@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Environment variables (NEVER commit these!)
+.env
+.env.local
+.env.production
+.env.development
+
+# Database
+*.db
+*.sqlite
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build outputs
+dist/
+build/
+.cache/
+
+# Vercel
+.vercel
+
+# Coverage
+coverage/
+*.lcov
+
+# Temp files
+tmp/
+temp/
+*.tmp

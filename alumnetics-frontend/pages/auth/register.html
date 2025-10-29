@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - ALUMNETICS | Alumni Network Platform</title>
+    <script src="../../assets/js/utils.js"></script>
+    <script src="../../assets/js/api-service.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {}
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .role-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .role-btn.active {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .role-btn:not(.active):hover {
+            background: #f3f4f6;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50">
+    
+    <div class="min-h-screen flex">
+        <!-- Left Side - Welcome Section -->
+        <div class="hidden lg:flex lg:w-2/5 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 relative overflow-hidden">
+            <!-- Decorative Elements -->
+            <div class="absolute inset-0">
+                <div class="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full floating"></div>
+                <div class="absolute top-1/4 right-16 w-16 h-16 bg-white/5 rounded-full floating" style="animation-delay: 2s;"></div>
+                <div class="absolute bottom-1/3 left-1/4 w-12 h-12 bg-white/10 rounded-full floating" style="animation-delay: 4s;"></div>
+                <div class="absolute bottom-16 right-20 w-8 h-8 bg-white/15 rounded-full floating" style="animation-delay: 1s;"></div>
+            </div>
+            
+            <!-- Content -->
+            <div class="flex items-center justify-center w-full p-12 relative z-10">
+                <div class="text-center text-white">
+                    <!-- Logo -->
+                    <div class="mb-8">
+                        <div class="inline-flex items-center justify-center w-20 h-20 bg-white/20 rounded-2xl mb-4">
+                            <img src="../../logo.jpeg" alt="ALUMNETICS" class="w-12 h-12 rounded-lg object-contain">
+                        </div>
+                        <h1 class="text-3xl font-bold mb-2">ALUMNETICS</h1>
+                        <div class="w-24 h-1 bg-white/30 rounded-full mx-auto"></div>
+                    </div>
+                    
+                    <!-- Welcome Text -->
+                    <div class="mb-12">
+                        <h2 class="text-4xl font-bold mb-4">Join Our Network!</h2>
+                        <p class="text-xl text-blue-100 leading-relaxed max-w-md mx-auto">
+                            Connect with thousands of alumni, students, and professionals across colleges.
+                        </p>
+                    </div>
+                    
+                    <!-- Benefits -->
+                    <div class="grid grid-cols-1 gap-6 max-w-xs mx-auto">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                                <span class="text-xl">🎓</span>
+                            </div>
+                            <div class="text-left">
+                                <h3 class="font-semibold">Multi-College Network</h3>
+                                <p class="text-sm text-blue-100">Connect across institutions</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                                <span class="text-xl">💼</span>
+                            </div>
+                            <div class="text-left">
+                                <h3 class="font-semibold">Career Opportunities</h3>
+                                <p class="text-sm text-blue-100">Access exclusive job openings</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                                <span class="text-xl">🤝</span>
+                            </div>
+                            <div class="text-left">
+                                <h3 class="font-semibold">Mentorship</h3>
+                                <p class="text-sm text-blue-100">Learn from experienced professionals</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Side - Registration Form -->
+        <div class="w-full lg:w-3/5 flex items-center justify-center p-8 bg-white overflow-y-auto">
+            <div class="w-full max-w-2xl fade-in-up">
+                <!-- Mobile Logo -->
+                <div class="lg:hidden text-center mb-8">
+                    <div class="inline-flex items-center space-x-3">
+                        <img src="../../assets/images/logo.jpeg" alt="ALUMNETICS" class="w-10 h-10 rounded-lg object-contain">
+                        <h1 class="text-2xl font-bold text-gray-900">ALUMNETICS</h1>
+                    </div>
+                </div>
+                
+                <!-- Form Header -->
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Create Your Account</h2>
+                    <p class="text-gray-600">Join the largest multi-college alumni network</p>
+                </div>
+                
+                <!-- Registration Form -->
+                <form class="space-y-6" onsubmit="handleRegister(event)" novalidate>
+                    <!-- Role Selection -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-4">Select Your Role</label>
+                        <div class="grid grid-cols-3 md:grid-cols-6 gap-3">
+                            <button type="button" class="role-btn flex flex-col items-center p-4 border border-gray-300 rounded-lg" onclick="selectRole('alumni', this)">
+                                <div class="w-8 h-8 mb-2 flex items-center justify-center bg-blue-100 rounded-full">
+                                    <span class="text-blue-600">👨‍🎓</span>
+                                </div>
+                                <span class="text-xs font-medium">Alumni</span>
+                            </button>
+                            <button type="button" class="role-btn flex flex-col items-center p-4 border border-gray-300 rounded-lg" onclick="selectRole('student', this)">
+                                <div class="w-8 h-8 mb-2 flex items-center justify-center bg-green-100 rounded-full">
+                                    <span class="text-green-600">🎓</span>
+                                </div>
+                                <span class="text-xs font-medium">Student</span>
+                            </button>
+                            <button type="button" class="role-btn flex flex-col items-center p-4 border border-gray-300 rounded-lg" onclick="selectRole('faculty', this)">
+                                <div class="w-8 h-8 mb-2 flex items-center justify-center bg-purple-100 rounded-full">
+                                    <span class="text-purple-600">👨‍🏫</span>
+                                </div>
+                                <span class="text-xs font-medium">Faculty</span>
+                            </button>
+                            <button type="button" class="role-btn flex flex-col items-center p-4 border border-gray-300 rounded-lg" onclick="selectRole('employer', this)">
+                                <div class="w-8 h-8 mb-2 flex items-center justify-center bg-orange-100 rounded-full">
+                                    <span class="text-orange-600">💼</span>
+                                </div>
+                                <span class="text-xs font-medium">Employer</span>
+                            </button>
+                            <button type="button" class="role-btn flex flex-col items-center p-4 border border-gray-300 rounded-lg" onclick="selectRole('institute', this)">
+                                <div class="w-8 h-8 mb-2 flex items-center justify-center bg-indigo-100 rounded-full">
+                                    <span class="text-indigo-600">🏛️</span>
+                                </div>
+                                <span class="text-xs font-medium">Institute</span>
+                            </button>
+                            <button type="button" class="role-btn flex flex-col items-center p-4 border border-gray-300 rounded-lg" onclick="selectRole('admin', this)">
+                                <div class="w-8 h-8 mb-2 flex items-center justify-center bg-gray-100 rounded-full">
+                                    <span class="text-gray-600">👤</span>
+                                </div>
+                                <span class="text-xs font-medium">Admin</span>
+                            </button>
+                        </div>
+                        <input type="hidden" id="selectedRole" required>
+                    </div>
+                    
+                    <!-- Essential Information -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- First Name -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">First Name *</label>
+                            <input
+                                type="text"
+                                id="firstName"
+                                name="firstName"
+                                placeholder="Enter your first name"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                                required
+                            />
+                        </div>
+                        
+                        <!-- Last Name -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Last Name (Optional)</label>
+                            <input
+                                type="text"
+                                id="lastName"
+                                name="lastName"
+                                placeholder="Enter your last name"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                            />
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Email Address -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="Enter your email"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                                required
+                            />
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Password -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Enter your password"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                                required
+                            />
+                        </div>
+                        
+                        <!-- Confirm Password -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                placeholder="Confirm your password"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                                required
+                            />
+                        </div>
+                    </div>
+                    
+                    <!-- College/University -->
+                    <div class="relative">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">College/University <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <input
+                                type="text"
+                                id="college"
+                                name="college"
+                                placeholder="Start typing or click dropdown..."
+                                class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                                autocomplete="off"
+                                oninput="filterUniversities()"
+                                onfocus="showUniversitySuggestions()"
+                                required
+                            />
+                            <!-- Dropdown Button -->
+                            <button
+                                type="button"
+                                onclick="toggleAllUniversities()"
+                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-600 transition-colors"
+                                title="Show all registered universities"
+                            >
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <input type="hidden" id="collegeOther" name="collegeOther" />
+                        
+                        <!-- Suggestions Dropdown -->
+                        <div id="universitySuggestions" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-64 overflow-y-auto">
+                            <!-- Suggestions will be populated by JavaScript -->
+                        </div>
+                        
+                        <p class="text-xs text-gray-500 mt-1">Type to search or click dropdown to see all registered universities</p>
+                    </div>
+                    
+                    <!-- Date of Birth -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+                        <input
+                            type="date"
+                            id="dateOfBirth"
+                            name="dateOfBirth"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                            required
+                        />
+                    </div>
+                    
+                    <!-- Address Information -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                        <textarea
+                            id="address"
+                            name="address"
+                            placeholder="Enter your address"
+                            rows="2"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                            required
+                        ></textarea>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- City -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">City</label>
+                            <input
+                                type="text"
+                                id="city"
+                                name="city"
+                                placeholder="Enter your city"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                                required
+                            />
+                        </div>
+                        
+                        <!-- Country -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                            <input
+                                type="text"
+                                id="country"
+                                name="country"
+                                placeholder="Enter your country"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                                required
+                            />
+                        </div>
+                    </div>
+                    
+                    <!-- Phone Number -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            placeholder="Enter your phone number"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                            required
+                        />
+                    </div>
+                    
+                    <!-- Optional Professional Information Toggle -->
+                    <div class="border-t border-gray-200 pt-6">
+                        <button
+                            type="button"
+                            onclick="toggleOptionalInfo()"
+                            class="flex items-center justify-between w-full text-left text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors duration-200"
+                        >
+                            <span>Professional & Academic Information (Optional)</span>
+                            <svg id="toggleIcon" class="w-4 h-4 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Optional Information Section -->
+                        <div id="optionalInfo" class="hidden mt-6 space-y-4 animate-fadeIn">
+                            <!-- LinkedIn Profile -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">LinkedIn Profile URL</label>
+                                <input
+                                    type="url"
+                                    id="linkedin"
+                                    name="linkedin"
+                                    placeholder="https://linkedin.com/in/yourprofile"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                                />
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Graduation Year -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Graduation Year</label>
+                                    <select id="graduationYear" name="graduationYear" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200">
+                                        <option value="">Select year</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2022">2022</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2020">2020</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Major/Field of Study -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Major/Field of Study</label>
+                                    <input
+                                        type="text"
+                                        id="major"
+                                        name="department"
+                                        placeholder="e.g., Computer Science"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                                    />
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Current Job Title -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Current Job Title</label>
+                                    <input
+                                        type="text"
+                                        id="jobTitle"
+                                        name="position"
+                                        placeholder="e.g., Software Engineer"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                                    />
+                                </div>
+                                
+                                <!-- Company/Institution -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Company/Institution</label>
+                                    <input
+                                        type="text"
+                                        id="company"
+                                        name="company"
+                                        placeholder="e.g., Google, Microsoft"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                                    />
+                                </div>
+                            </div>
+                            
+                            <!-- Bio -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Bio: Tell us about yourself</label>
+                                <textarea
+                                    id="bio"
+                                    placeholder="Share your background, interests, and what you hope to achieve in this network..."
+                                    rows="4"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                                ></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Terms and Conditions -->
+                    <div class="flex items-start space-x-3">
+                        <input 
+                            type="checkbox" 
+                            id="terms" 
+                            required
+                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 mt-1"
+                        >
+                        <label for="terms" class="text-sm text-gray-600">
+                            I agree to the <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">Terms and Conditions</a> and 
+                            <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">Privacy Policy</a>
+                        </label>
+                    </div>
+                    
+                    <!-- Create Account Button -->
+                    <button 
+                        type="submit" 
+                        class="w-full bg-blue-600 text-white py-4 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 font-medium transition-all duration-200 transform hover:scale-[1.02] text-lg"
+                    >
+                        Create Account
+                    </button>
+                </form>
+                
+                <!-- Sign In Link -->
+                <div class="mt-6 text-center">
+                    <p class="text-gray-600">
+                        Already have an account?
+                        <button type="button" onclick="window.location.href='login.html'" class="text-blue-600 hover:text-blue-800 font-medium">Sign in</button>
+                    </p>
+                </div>
+                
+                <!-- Back to Home -->
+                <div class="mt-4 text-center">
+                    <button
+                        type="button"
+                        onclick="window.location.href='../../index.html'"
+                        class="text-gray-500 hover:text-gray-700 text-sm flex items-center justify-center space-x-2 mx-auto"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        <span>Back to home</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let selectedRole = '';
+        let isLoading = false;
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Note: Auto-redirect disabled - allow users to view register page even if logged in
+            // They can manually go to dashboard or logout if needed
+            
+            // Check database connection
+            checkDatabaseConnection();
+        });
+
+        async function checkDatabaseConnection() {
+            try {
+                if (window.AlumNeticsAPI) {
+                    const status = await window.AlumNeticsAPI.checkDatabaseConnection();
+                    if (status && status.status === 'connected') {
+                        console.log('✅ Database connected successfully');
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to check database status:', error);
+            }
+        }
+        
+        function selectRole(role, button) {
+            // Remove active class from all role buttons
+            document.querySelectorAll('.role-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to selected button
+            button.classList.add('active');
+            
+            // Store selected role
+            selectedRole = role;
+            document.getElementById('selectedRole').value = role;
+        }
+        
+        function toggleOptionalInfo() {
+            const optionalInfo = document.getElementById('optionalInfo');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (optionalInfo.classList.contains('hidden')) {
+                optionalInfo.classList.remove('hidden');
+                toggleIcon.style.transform = 'rotate(180deg)';
+            } else {
+                optionalInfo.classList.add('hidden');
+                toggleIcon.style.transform = 'rotate(0deg)';
+            }
+        }
+        
+        async function handleRegister(event) {
+            event.preventDefault();
+            
+            console.log('Registration form submitted');
+            
+            if (isLoading) {
+                console.log('Already loading, skipping');
+                return;
+            }
+            
+            // Clear previous errors
+            clearErrors();
+            
+            // Get form data
+            const formData = new FormData(event.target);
+            
+            // Get firstName and lastName directly from form fields
+            const firstName = (formData.get('firstName') || '').trim();
+            const lastName = (formData.get('lastName') || '').trim();
+            
+            const registrationData = {
+                email: formData.get('email'),
+                password: formData.get('password'),
+                confirmPassword: formData.get('confirmPassword'),
+                role: selectedRole,
+                firstName: firstName,
+                lastName: lastName || '', // Send empty string if lastName is not provided
+                phoneNumber: formData.get('phone'),
+                dateOfBirth: formData.get('dateOfBirth'),
+                agreeToTerms: document.getElementById('terms')?.checked || false
+            };
+            
+            // Add academic information if provided
+            const college = formData.get('college');
+            
+            if (college && college.trim().length > 0) {
+                registrationData.institution = college.trim();
+            }
+            if (formData.get('department')) {
+                registrationData.department = formData.get('department');
+            }
+            if (formData.get('graduationYear')) {
+                registrationData.graduationYear = parseInt(formData.get('graduationYear'));
+            }
+            
+            // Add professional information for alumni/faculty
+            if (selectedRole === 'alumni' || selectedRole === 'faculty') {
+                registrationData.currentPosition = formData.get('position');
+                registrationData.company = formData.get('company');
+                registrationData.linkedin = formData.get('linkedin');
+            }
+            
+            console.log('Full Registration data being sent:', JSON.stringify({
+                ...registrationData,
+                password: '***',
+                confirmPassword: '***'
+            }, null, 2));
+            
+            // Validate inputs
+            console.log('Starting validation...');
+            if (!validateInputs(registrationData)) {
+                console.log('Validation failed');
+                return;
+            }
+            console.log('Validation passed');
+            
+            // Show loading state
+            console.log('Setting loading state...');
+            setLoadingState(true);
+            
+            try {
+                if (!window.AlumNeticsAPI) {
+                    throw new Error('API service not available');
+                }
+                
+                console.log('Sending registration request to API...');
+                const response = await window.AlumNeticsAPI.register(registrationData);
+                console.log('API Response:', response);
+                
+                if (response.success) {
+                    console.log('Registration successful!');
+                    if (window.AlumNeticsUtils) {
+                        window.AlumNeticsUtils.showToast('Registration successful! Please check your email to verify your account.', 'success');
+                    } else {
+                        alert('Registration successful! Please check your email to verify your account.');
+                    }
+                    
+                    // Redirect based on role after successful registration
+                    setTimeout(() => {
+                        redirectToDashboard(selectedRole);
+                    }, 2000);
+                    
+                } else {
+                    throw new Error(response.message || 'Registration failed');
+                }
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                if (window.AlumNeticsUtils) {
+                    window.AlumNeticsUtils.showToast(error.message || 'Registration failed. Please try again.', 'error');
+                } else {
+                    alert(error.message || 'Registration failed. Please try again.');
+                }
+                setLoadingState(false);
+            }
+        }
+
+        function validateInputs(data) {
+            let isValid = true;
+            
+            // Validate role selection
+            if (!selectedRole) {
+                showFieldError('selectedRole', 'Please select your role');
+                isValid = false;
+            }
+            
+            // Validate full name
+            if (!data.firstName || data.firstName.trim().length < 2) {
+                showFieldError('fullName', 'Please enter your full name');
+                isValid = false;
+            }
+            
+            // Validate college/university
+            const college = document.getElementById('college')?.value;
+            
+            if (!college || college.trim().length < 2) {
+                showFieldError('college', 'Please enter your college/university name');
+                isValid = false;
+            }
+            
+            // Validate email
+            if (!data.email) {
+                showFieldError('email', 'Email is required');
+                isValid = false;
+            } else if (window.AlumNeticsUtils && !window.AlumNeticsUtils.validateEmail(data.email)) {
+                showFieldError('email', 'Please enter a valid email address');
+                isValid = false;
+            } else if (!window.AlumNeticsUtils && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+                showFieldError('email', 'Please enter a valid email address');
+                isValid = false;
+            }
+            
+            // Validate password
+            if (!data.password) {
+                showFieldError('password', 'Password is required');
+                isValid = false;
+            } else if (data.password.length < 8) {
+                showFieldError('password', 'Password must be at least 8 characters');
+                isValid = false;
+            } else if (!/(?=.*[a-zA-Z])(?=.*\d)/.test(data.password)) {
+                showFieldError('password', 'Password must contain letters and numbers');
+                isValid = false;
+            }
+            
+            // Validate confirm password
+            if (!data.confirmPassword) {
+                showFieldError('confirmPassword', 'Please confirm your password');
+                isValid = false;
+            } else if (data.password !== data.confirmPassword) {
+                showFieldError('confirmPassword', 'Passwords do not match');
+                isValid = false;
+            }
+            
+            // Validate phone if provided
+            if (data.phone && window.AlumNeticsUtils && !window.AlumNeticsUtils.validatePhone(data.phone)) {
+                showFieldError('phone', 'Please enter a valid phone number');
+                isValid = false;
+            } else if (data.phone && !window.AlumNeticsUtils && !/^\+?[\d\s-()]+$/.test(data.phone)) {
+                showFieldError('phone', 'Please enter a valid phone number');
+                isValid = false;
+            }
+            
+            // Validate terms and conditions
+            const termsCheckbox = document.getElementById('terms');
+            if (!termsCheckbox || !termsCheckbox.checked) {
+                alert('Please accept the Terms and Conditions to continue');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+
+        function showFieldError(fieldId, message) {
+            const errorElement = document.getElementById(fieldId + 'Error') || createErrorElement(fieldId);
+            const inputElement = document.getElementById(fieldId);
+            
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.classList.remove('hidden');
+                errorElement.style.display = 'block';
+                errorElement.style.color = '#ef4444';
+                errorElement.style.fontSize = '0.875rem';
+                errorElement.style.marginTop = '0.25rem';
+            }
+            
+            if (inputElement) {
+                inputElement.style.borderColor = '#ef4444';
+            }
+        }
+
+        function createErrorElement(fieldId) {
+            const inputElement = document.getElementById(fieldId);
+            if (!inputElement) return null;
+            
+            const errorElement = document.createElement('div');
+            errorElement.id = fieldId + 'Error';
+            errorElement.className = 'text-red-500 text-sm mt-1';
+            
+            // Insert after the input element
+            inputElement.parentNode.insertBefore(errorElement, inputElement.nextSibling);
+            
+            return errorElement;
+        }
+
+        function clearErrors() {
+            const errorElements = document.querySelectorAll('[id$="Error"]');
+            const inputElements = document.querySelectorAll('input, select');
+            
+            errorElements.forEach(element => {
+                element.style.display = 'none';
+                element.textContent = '';
+            });
+            
+            inputElements.forEach(element => {
+                element.style.borderColor = '';
+            });
+        }
+
+        function setLoadingState(loading) {
+            isLoading = loading;
+            const submitButton = document.querySelector('button[type="submit"]');
+            
+            if (loading) {
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = `
+                        <div class="flex items-center justify-center">
+                            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            Creating Account...
+                        </div>
+                    `;
+                }
+                // Show loading indicator on page
+                if (window.AlumNeticsUtils && typeof window.AlumNeticsUtils.showLoading === 'function') {
+                    window.AlumNeticsUtils.showLoading();
+                }
+            } else {
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Create Account';
+                }
+                // Hide loading indicator
+                if (window.AlumNeticsUtils && typeof window.AlumNeticsUtils.hideLoading === 'function') {
+                    window.AlumNeticsUtils.hideLoading();
+                }
+            }
+        }
+
+        function redirectToDashboard(role) {
+            switch (role) {
+                case 'alumni':
+                case 'faculty':
+                case 'employer':
+                case 'institute':
+                    window.location.href = '../dashboard/alumni-dashboard.html';
+                    break;
+                case 'admin':
+                    window.location.href = '../dashboard/admin-dashboard-fixed.html';
+                    break;
+                case 'student':
+                default:
+                    window.location.href = '../dashboard/student-dashboard.html';
+                    break;
+            }
+        }
+    </script>
+
+    <!-- University Autocomplete Script -->
+    <script>
+        // List of registered universities
+        const registeredUniversities = [
+            // IITs
+            'IIT Delhi', 'IIT Bombay', 'IIT Madras', 'IIT Kanpur', 'IIT Kharagpur', 
+            'IIT Roorkee', 'IIT Guwahati', 'IIT Hyderabad',
+            // NITs
+            'NIT Trichy', 'NIT Warangal', 'NIT Surathkal', 'NIT Calicut',
+            // IIITs
+            'IIIT Hyderabad', 'IIIT Bangalore', 'IIIT Delhi',
+            // IIMs
+            'IIM Ahmedabad', 'IIM Bangalore', 'IIM Calcutta', 'IIM Lucknow',
+            // Delhi University Colleges
+            "St. Stephen's College", 'Hindu College', 'Ramjas College', 
+            'Shri Ram College of Commerce (SRCC)', 'Lady Shri Ram College (LSR)', 
+            'Miranda House', 'Ram Lal Anand College',
+            // Other Top Universities
+            'Chandigarh University', 'Netaji Subhas Engineering College', 'Anna University',
+            'Jadavpur University', 'BIT Mesra', 'VIT Vellore', 'BITS Pilani',
+            'Manipal Institute of Technology', 'SRM University', 'Amity University',
+            'Lovely Professional University (LPU)', 'Delhi Technological University (DTU)',
+            'Guru Gobind Singh Indraprastha University (GGSIPU)', 'University of Mumbai',
+            'Savitribai Phule Pune University', 'Jamia Millia Islamia',
+            'Aligarh Muslim University (AMU)', 'Banaras Hindu University (BHU)'
+        ];
+
+        function filterUniversities() {
+            const input = document.getElementById('college');
+            const suggestionsDiv = document.getElementById('universitySuggestions');
+            const searchTerm = input.value.toLowerCase().trim();
+
+            if (searchTerm.length === 0) {
+                suggestionsDiv.classList.add('hidden');
+                return;
+            }
+
+            // Filter universities that match the search term
+            const matches = registeredUniversities.filter(uni => 
+                uni.toLowerCase().includes(searchTerm)
+            );
+
+            if (matches.length === 0) {
+                suggestionsDiv.innerHTML = '<div class="px-4 py-3 text-sm text-gray-500">No matches found in registered universities. You can still use your typed name.</div>';
+                suggestionsDiv.classList.remove('hidden');
+            } else {
+                suggestionsDiv.innerHTML = matches.map(uni => `
+                    <div class="px-4 py-3 hover:bg-blue-50 cursor-pointer text-sm border-b border-gray-100 last:border-b-0" 
+                         onclick="selectUniversity('${uni.replace(/'/g, "\\'")}')">
+                        ${uni}
+                    </div>
+                `).join('');
+                suggestionsDiv.classList.remove('hidden');
+            }
+        }
+
+        function showUniversitySuggestions() {
+            const input = document.getElementById('college');
+            if (input.value.trim().length > 0) {
+                filterUniversities();
+            }
+        }
+
+        function selectUniversity(universityName) {
+            const input = document.getElementById('college');
+            input.value = universityName;
+            document.getElementById('universitySuggestions').classList.add('hidden');
+        }
+
+        function toggleAllUniversities() {
+            const suggestionsDiv = document.getElementById('universitySuggestions');
+            const input = document.getElementById('college');
+            
+            if (suggestionsDiv.classList.contains('hidden')) {
+                // Show all universities grouped by category
+                suggestionsDiv.innerHTML = `
+                    <div class="px-4 py-2 bg-gray-50 text-xs font-semibold text-gray-700 sticky top-0">IITs (Indian Institute of Technology)</div>
+                    ${registeredUniversities.filter(u => u.startsWith('IIT ')).map(uni => `
+                        <div class="px-4 py-3 hover:bg-blue-50 cursor-pointer text-sm border-b border-gray-100" 
+                             onclick="selectUniversity('${uni.replace(/'/g, "\\'")}')">
+                            ${uni}
+                        </div>
+                    `).join('')}
+                    
+                    <div class="px-4 py-2 bg-gray-50 text-xs font-semibold text-gray-700 sticky top-0">NITs (National Institute of Technology)</div>
+                    ${registeredUniversities.filter(u => u.startsWith('NIT ')).map(uni => `
+                        <div class="px-4 py-3 hover:bg-blue-50 cursor-pointer text-sm border-b border-gray-100" 
+                             onclick="selectUniversity('${uni.replace(/'/g, "\\'")}')">
+                            ${uni}
+                        </div>
+                    `).join('')}
+                    
+                    <div class="px-4 py-2 bg-gray-50 text-xs font-semibold text-gray-700 sticky top-0">IIITs & IIMs</div>
+                    ${registeredUniversities.filter(u => u.startsWith('IIIT ') || u.startsWith('IIM ')).map(uni => `
+                        <div class="px-4 py-3 hover:bg-blue-50 cursor-pointer text-sm border-b border-gray-100" 
+                             onclick="selectUniversity('${uni.replace(/'/g, "\\'")}')">
+                            ${uni}
+                        </div>
+                    `).join('')}
+                    
+                    <div class="px-4 py-2 bg-gray-50 text-xs font-semibold text-gray-700 sticky top-0">Other Top Universities</div>
+                    ${registeredUniversities.filter(u => !u.startsWith('IIT ') && !u.startsWith('NIT ') && !u.startsWith('IIIT ') && !u.startsWith('IIM ')).map(uni => `
+                        <div class="px-4 py-3 hover:bg-blue-50 cursor-pointer text-sm border-b border-gray-100 last:border-b-0" 
+                             onclick="selectUniversity('${uni.replace(/'/g, "\\'")}')">
+                            ${uni}
+                        </div>
+                    `).join('')}
+                `;
+                suggestionsDiv.classList.remove('hidden');
+                input.focus();
+            } else {
+                suggestionsDiv.classList.add('hidden');
+            }
+        }
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function(event) {
+            const input = document.getElementById('college');
+            const suggestionsDiv = document.getElementById('universitySuggestions');
+            const dropdownBtn = event.target.closest('button[onclick="toggleAllUniversities()"]');
+            
+            if (event.target !== input && !suggestionsDiv.contains(event.target) && !dropdownBtn) {
+                suggestionsDiv.classList.add('hidden');
+            }
+        });
+    </script>
+
+<script src="../../chatbot.js"></script>
+</body>
+</html>

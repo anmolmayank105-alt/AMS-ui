@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - ALUMNETICS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeInUp {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .nav-item {
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+        /* Animated background patterns */
+        .animated-bg {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .animated-bg .floating-shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .animated-bg .floating-shape:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .animated-bg .floating-shape:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 60%;
+            right: 20%;
+            animation-delay: -2s;
+        }
+
+        .animated-bg .floating-shape:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            bottom: 20%;
+            left: 70%;
+            animation-delay: -4s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.7;
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 1;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-published { background: #dcfce7; color: #166534; }
+        .status-draft { background: #fef3c7; color: #92400e; }
+        .status-cancelled { background: #fee2e2; color: #991b1b; }
+        .status-completed { background: #e0e7ff; color: #3730a3; }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #667eea; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #764ba2; }
+
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="animated-bg relative">
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" class="fixed top-4 right-4 bg-white px-4 py-3 rounded-xl shadow-2xl hidden z-50">
+        <div class="flex items-center space-x-3">
+            <div class="spinner"></div>
+            <span class="text-sm font-medium text-gray-700">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Main Layout Container -->
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white/90 backdrop-blur-md border-r border-white/20 shadow-xl flex flex-col">
+            <!-- Logo Section -->
+            <div class="p-6 border-b border-white/20">
+                <div class="flex items-center space-x-3">
+                    <img src="../../assets/images/logo.jpeg" alt="AlumNetics logo" class="w-10 h-10 rounded-xl object-cover shadow-lg border border-white/40">
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">ALUMNETICS</h1>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="flex-1 p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#" onclick="switchSection('overview'); return false;" class="nav-item active flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-200" data-section="overview">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                            </svg>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="switchSection('events'); return false;" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-200" data-section="events">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <span>Events</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="switchSection('users'); return false;" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-200" data-section="users">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            </svg>
+                            <span>Users</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="switchSection('analytics'); return false;" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-200" data-section="analytics">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            </svg>
+                            <span>Analytics</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../profile/view-profile.html" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- User Profile Section -->
+            <div class="p-4 border-t border-white/20">
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg" id="adminAvatar">
+                        <span id="adminInitials">AD</span>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-semibold text-gray-800" id="adminName">Admin</p>
+                        <p class="text-xs text-gray-600">Administrator</p>
+                    </div>
+                </div>
+                <button onclick="logout()" class="w-full py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-200 font-medium shadow-lg text-sm">
+                    Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Scrollable Content Area -->
+            <div class="flex-1 overflow-y-auto p-6 space-y-6 relative">
+                <!-- Floating shapes for animation -->
+                <div class="floating-shape"></div>
+                <div class="floating-shape"></div>
+                <div class="floating-shape"></div>
+
+                <!-- Overview Section -->
+                <div id="overviewSection" class="section-content">
+                    <!-- Welcome Banner -->
+                    <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-3xl shadow-2xl border border-white/20 p-8 text-white animate-fadeInUp mb-6">
+                        <div class="relative z-10">
+                            <h2 class="text-3xl font-bold mb-2">Welcome Back, Admin! 👋</h2>
+                            <p class="text-purple-100">Here's what's happening with your platform today.</p>
+                        </div>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                        <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-6 card-hover animate-fadeInUp">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-1" id="totalUsers">0</h3>
+                            <p class="text-sm text-gray-600">Total Users</p>
+                            <p class="text-xs text-green-600 mt-2">↑ 12% from last month</p>
+                        </div>
+
+                        <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-6 card-hover animate-fadeInUp">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-1" id="totalEvents">0</h3>
+                            <p class="text-sm text-gray-600">Total Events</p>
+                            <p class="text-xs text-green-600 mt-2">↑ 8 events this month</p>
+                        </div>
+
+                        <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-6 card-hover animate-fadeInUp">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-1" id="activeEvents">0</h3>
+                            <p class="text-sm text-gray-600">Active Events</p>
+                            <p class="text-xs text-blue-600 mt-2">Published</p>
+                        </div>
+
+                        <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-6 card-hover animate-fadeInUp">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center shadow-lg">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-1" id="pendingApprovals">0</h3>
+                            <p class="text-sm text-gray-600">Pending Approvals</p>
+                            <p class="text-xs text-orange-600 mt-2">Requires attention</p>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Recent Activity</h3>
+                        <div class="space-y-4" id="recentActivity">
+                            <div class="text-center text-gray-500 py-8">Loading activity...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Events Section -->
+                <div id="eventsSection" class="section-content hidden">
+                    <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-3xl shadow-2xl border border-white/20 p-8 text-white animate-fadeInUp mb-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 class="text-3xl font-bold mb-2">Event Management 📅</h2>
+                                <p class="text-purple-100">Create and manage all platform events</p>
+                            </div>
+                            <button onclick="openCreateEventModal()" class="px-6 py-3 bg-white text-purple-600 rounded-xl font-semibold hover:bg-purple-50 transition shadow-lg">
+                                + Create Event
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Event Filters -->
+                    <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-6 mb-6">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <input type="text" id="eventSearch" placeholder="Search events..." class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            
+                            <select id="eventTypeFilter" class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                <option value="">All Types</option>
+                                <option value="reunion">Reunion</option>
+                                <option value="networking">Networking</option>
+                                <option value="workshop">Workshop</option>
+                                <option value="seminar">Seminar</option>
+                                <option value="career-fair">Career Fair</option>
+                                <option value="fundraising">Fundraising</option>
+                                <option value="social">Social</option>
+                                <option value="other">Other</option>
+                            </select>
+
+                            <select id="eventStatusFilter" class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                <option value="">All Status</option>
+                                <option value="draft">Draft</option>
+                                <option value="published">Published</option>
+                                <option value="cancelled">Cancelled</option>
+                                <option value="completed">Completed</option>
+                            </select>
+
+                            <button onclick="loadEvents()" class="px-6 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl font-medium hover:from-purple-600 hover:to-purple-700 transition shadow-lg">
+                                Apply Filters
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Events Grid -->
+                    <div id="eventsGridContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Events will be loaded here as cards -->
+                        <div class="col-span-full text-center py-12 text-gray-500">
+                            <div class="text-4xl mb-2">📅</div>
+                            <p>Loading events...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Section -->
+                <div id="usersSection" class="section-content hidden">
+                    <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-3xl shadow-2xl border border-white/20 p-8 text-white animate-fadeInUp mb-6">
+                        <h2 class="text-3xl font-bold mb-2">User Management 👥</h2>
+                        <p class="text-purple-100">Manage all platform users</p>
+                    </div>
+
+                    <!-- User Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-6 card-hover">
+                            <h3 class="text-sm font-medium text-gray-600 mb-2">Students</h3>
+                            <p class="text-3xl font-bold text-gray-900" id="studentCount">0</p>
+                        </div>
+                        <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-6 card-hover">
+                            <h3 class="text-sm font-medium text-gray-600 mb-2">Alumni</h3>
+                            <p class="text-3xl font-bold text-gray-900" id="alumniCount">0</p>
+                        </div>
+                        <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-6 card-hover">
+                            <h3 class="text-sm font-medium text-gray-600 mb-2">Faculty</h3>
+                            <p class="text-3xl font-bold text-gray-900" id="facultyCount">0</p>
+                        </div>
+                    </div>
+
+                    <!-- Users Table -->
+                    <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-6">
+                        <div class="mb-4">
+                            <input type="text" id="userSearch" placeholder="Search users..." class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b border-gray-200">
+                                        <th class="text-left py-4 px-4 font-semibold text-gray-700">User</th>
+                                        <th class="text-left py-4 px-4 font-semibold text-gray-700">Role</th>
+                                        <th class="text-left py-4 px-4 font-semibold text-gray-700">Institution</th>
+                                        <th class="text-left py-4 px-4 font-semibold text-gray-700">Joined</th>
+                                        <th class="text-left py-4 px-4 font-semibold text-gray-700">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                    <tr>
+                                        <td colspan="5" class="text-center py-8 text-gray-500">Loading users...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Section -->
+                <div id="analyticsSection" class="section-content hidden">
+                    <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-3xl shadow-2xl border border-white/20 p-8 text-white animate-fadeInUp mb-6">
+                        <h2 class="text-3xl font-bold mb-2">Platform Analytics 📊</h2>
+                        <p class="text-purple-100">Insights and statistics</p>
+                    </div>
+
+                    <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Coming Soon</h3>
+                        <p class="text-gray-600">Detailed analytics dashboard will be available here.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create/Edit Event Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-bold text-gray-900" id="modalTitle">Create New Event</h3>
+                <button onclick="closeEventModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <form id="eventForm" class="space-y-4">
+                <input type="hidden" id="eventId">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Event Title *</label>
+                    <input type="text" id="eventTitle" required maxlength="200" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Enter event title">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
+                    <textarea id="eventDescription" required maxlength="2000" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Describe your event"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Event Type *</label>
+                        <select id="eventType" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            <option value="">Select type</option>
+                            <option value="reunion">Reunion</option>
+                            <option value="networking">Networking</option>
+                            <option value="workshop">Workshop</option>
+                            <option value="seminar">Seminar</option>
+                            <option value="career-fair">Career Fair</option>
+                            <option value="fundraising">Fundraising</option>
+                            <option value="social">Social</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                        <select id="eventCategory" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            <option value="">Select category</option>
+                            <option value="academic">Academic</option>
+                            <option value="professional">Professional</option>
+                            <option value="social">Social</option>
+                            <option value="sports">Sports</option>
+                            <option value="cultural">Cultural</option>
+                            <option value="charity">Charity</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Start Date & Time *</label>
+                        <input type="datetime-local" id="eventStartDate" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">End Date & Time *</label>
+                        <input type="datetime-local" id="eventEndDate" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Event Mode *</label>
+                    <div class="flex space-x-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="eventMode" value="physical" class="mr-2" checked>
+                            <span>Physical</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="eventMode" value="virtual" class="mr-2">
+                            <span>Virtual</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="eventMode" value="hybrid" class="mr-2">
+                            <span>Hybrid</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="venueSection">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Venue Name</label>
+                    <input type="text" id="venueName" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Enter venue name">
+                </div>
+
+                <div id="virtualSection" class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Virtual Meeting Link</label>
+                    <input type="url" id="virtualLink" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="https://zoom.us/...">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Max Attendees</label>
+                        <input type="number" id="maxAttendees" min="1" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Leave empty for unlimited">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Registration Fee (USD)</label>
+                        <input type="number" id="registrationFee" min="0" step="0.01" value="0" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Event Image 🖼️</label>
+                    <div class="space-y-3">
+                        <!-- Image URL Input -->
+                        <div>
+                            <input type="url" id="eventImageUrl" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="https://example.com/event-image.jpg">
+                            <p class="text-xs text-gray-500 mt-1">Enter image URL or upload a file below</p>
+                        </div>
+                        
+                        <!-- File Upload -->
+                        <div class="relative">
+                            <input type="file" id="eventImageFile" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                            <button type="button" onclick="document.getElementById('eventImageFile').click()" class="w-full px-4 py-2 border-2 border-dashed border-gray-300 rounded-xl hover:border-purple-500 transition flex items-center justify-center space-x-2 text-gray-600 hover:text-purple-600">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                </svg>
+                                <span id="uploadButtonText">Upload Image</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Image Preview -->
+                        <div id="imagePreview" class="hidden">
+                            <div class="relative rounded-xl overflow-hidden border border-gray-200">
+                                <img id="previewImage" src="" alt="Event preview" class="w-full h-48 object-cover">
+                                <button type="button" onclick="removeImage()" class="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition shadow-lg">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1" id="imageFileName"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <select id="eventStatus" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4 border-t">
+                    <button type="button" onclick="closeEventModal()" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-6 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl font-medium hover:from-purple-600 hover:to-purple-700 transition shadow-lg">
+                        Save Event
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Load Required Scripts -->
+    <script src="../../assets/js/api-service.js"></script>
+    <script src="../../assets/js/utils.js"></script>
+    
+    <script>
+        // Global state
+        let currentUser = null;
+        let allEvents = [];
+        let allUsers = [];
+        let editingEventId = null;
+
+        // Initialize dashboard
+        async function initDashboard() {
+            console.log('Initializing admin dashboard...');
+            
+            // Check authentication
+            if (!window.AlumNeticsAPI.isAuthenticated()) {
+                console.log('Not authenticated, redirecting to login...');
+                window.location.href = '../auth/login.html';
+                return;
+            }
+
+            // Get current user
+            const userData = localStorage.getItem('userData');
+            if (userData) {
+                currentUser = JSON.parse(userData);
+                
+                // Check if user is admin
+                if (currentUser.role !== 'admin') {
+                    alert('Access denied. Admin privileges required.');
+                    window.location.href = '../auth/login.html';
+                    return;
+                }
+
+                // Update admin info
+                const fullName = currentUser.fullName || 'Admin';
+                document.getElementById('adminName').textContent = fullName;
+                const initials = fullName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                document.getElementById('adminInitials').textContent = initials;
+            }
+
+            // Load initial data
+            await loadOverviewStats();
+            
+            // Setup navigation
+            setupNavigation();
+            
+            // Setup event mode toggle
+            setupEventModeToggle();
+        }
+
+        // Setup navigation
+        function setupNavigation() {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.dataset.section;
+                    switchSection(section);
+                });
+            });
+        }
+
+        // Switch sections
+        function switchSection(section) {
+            // Update nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.section === section) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(sec => {
+                sec.classList.add('hidden');
+            });
+
+            // Show selected section
+            const sectionElement = document.getElementById(section + 'Section');
+            if (sectionElement) {
+                sectionElement.classList.remove('hidden');
+            }
+
+            // Load section data
+            switch(section) {
+                case 'overview':
+                    loadOverviewStats();
+                    break;
+                case 'events':
+                    loadEvents();
+                    break;
+                case 'users':
+                    loadUsers();
+                    break;
+                case 'analytics':
+                    // Analytics will be implemented later
+                    break;
+            }
+        }
+
+        // Load overview statistics
+        async function loadOverviewStats() {
+            showLoading();
+            try {
+                // Load users
+                const usersResponse = await window.AlumNeticsAPI.getUsers();
+                console.log('Users response:', usersResponse);
+                
+                if (usersResponse.success) {
+                    // Handle different response structures
+                    let users = usersResponse.data;
+                    
+                    // Backend might return nested structure
+                    if (!Array.isArray(users)) {
+                        if (users && users.users && Array.isArray(users.users)) {
+                            users = users.users;
+                        } else if (users && Array.isArray(users.data)) {
+                            users = users.data;
+                        } else {
+                            console.warn('Users data is not an array:', users);
+                            users = [];
+                        }
+                    }
+                    
+                    document.getElementById('totalUsers').textContent = users.length;
+                    
+                    const students = users.filter(u => u.role === 'student');
+                    const alumni = users.filter(u => u.role === 'alumni');
+                    const faculty = users.filter(u => u.role === 'faculty');
+                    
+                    document.getElementById('studentCount').textContent = students.length;
+                    document.getElementById('alumniCount').textContent = alumni.length;
+                    document.getElementById('facultyCount').textContent = faculty.length;
+                }
+
+                // Load events
+                const eventsResponse = await window.AlumNeticsAPI.getEvents();
+                console.log('Events response:', eventsResponse);
+                
+                if (eventsResponse.success) {
+                    // Handle different response structures
+                    let events = eventsResponse.data;
+                    
+                    // Backend returns { events: [], pagination: {} } structure
+                    if (!Array.isArray(events)) {
+                        if (events && events.events && Array.isArray(events.events)) {
+                            events = events.events;
+                        } else if (events && Array.isArray(events.data)) {
+                            events = events.data;
+                        } else {
+                            console.warn('Events data is not an array:', events);
+                            events = [];
+                        }
+                    }
+                    
+                    document.getElementById('totalEvents').textContent = events.length;
+                    
+                    const activeEvents = events.filter(e => e.status === 'published');
+                    document.getElementById('activeEvents').textContent = activeEvents.length;
+                    
+                    const pendingEvents = events.filter(e => e.status === 'draft');
+                    document.getElementById('pendingApprovals').textContent = pendingEvents.length;
+                }
+
+                // Load recent activity
+                loadRecentActivity();
+                
+            } catch (error) {
+                console.error('Error loading overview:', error);
+                showError('Failed to load dashboard statistics');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Load recent activity
+        function loadRecentActivity() {
+            const activityHtml = `
+                <div class="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-xl transition">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-900 font-medium">New user registered</p>
+                        <p class="text-xs text-gray-500">2 hours ago</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-xl transition">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-900 font-medium">Event published</p>
+                        <p class="text-xs text-gray-500">5 hours ago</p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('recentActivity').innerHTML = activityHtml;
+        }
+
+        // Load events
+        async function loadEvents() {
+            showLoading();
+            try {
+                const response = await window.AlumNeticsAPI.getEvents();
+                console.log('Load events response:', response);
+                
+                if (response.success) {
+                    // Handle different response structures
+                    let events = response.data;
+                    
+                    // Backend returns { events: [], pagination: {} } structure
+                    if (!Array.isArray(events)) {
+                        if (events && events.events && Array.isArray(events.events)) {
+                            events = events.events;
+                        } else if (events && Array.isArray(events.data)) {
+                            events = events.data;
+                        } else {
+                            console.warn('Events data is not an array:', events);
+                            events = [];
+                        }
+                    }
+                    
+                    allEvents = events;
+                    displayEvents(allEvents);
+                } else {
+                    showError('Failed to load events');
+                }
+            } catch (error) {
+                console.error('Error loading events:', error);
+                showError('Failed to load events');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Display events in card grid
+        function displayEvents(events) {
+            const container = document.getElementById('eventsGridContainer');
+            
+            // Safety check
+            if (!Array.isArray(events)) {
+                console.warn('displayEvents called with non-array:', events);
+                container.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500"><p>Error loading events</p></div>';
+                return;
+            }
+            
+            if (events.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <div class="text-6xl mb-4">📅</div>
+                        <h3 class="text-xl font-bold text-gray-700 mb-2">No Events Found</h3>
+                        <p class="text-gray-500 mb-4">Create your first event to get started!</p>
+                        <button onclick="openCreateEventModal()" class="px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl font-medium hover:from-purple-600 hover:to-purple-700 transition shadow-lg">
+                            + Create Event
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = events.map(event => {
+                const startDate = new Date(event.startDate).toLocaleDateString();
+                const attendeeCount = event.attendees ? event.attendees.length : 0;
+                const maxAttendees = event.maxAttendees || '∞';
+                const statusClass = `status-${event.status || 'draft'}`;
+                const isDraft = event.status === 'draft';
+                const needsApproval = isDraft && !event.isApproved;
+                
+                // Default images
+                const defaultImages = {
+                    'reunion': 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=400&h=200&fit=crop',
+                    'networking': 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=400&h=200&fit=crop',
+                    'workshop': 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=200&fit=crop',
+                    'seminar': 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=200&fit=crop',
+                    'career-fair': 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=400&h=200&fit=crop',
+                    'fundraising': 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&h=200&fit=crop',
+                    'social': 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=200&fit=crop',
+                    'other': 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=400&h=200&fit=crop'
+                };
+                let eventImage = null;
+                if (event.coverImage && typeof event.coverImage === 'object' && event.coverImage.url) {
+                    eventImage = event.coverImage.url;
+                } else if (event.coverImage && typeof event.coverImage === 'string' && event.coverImage.trim()) {
+                    eventImage = event.coverImage;
+                } else if (event.imageUrl && typeof event.imageUrl === 'string' && event.imageUrl.trim()) {
+                    eventImage = event.imageUrl;
+                }
+                if (!eventImage) eventImage = defaultImages[event.eventType] || defaultImages['other'];
+                
+                return `
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-105">
+                        <!-- Image at Top (30% height) -->
+                        <div class="relative h-32 bg-gradient-to-br from-purple-400 to-purple-600">
+                            <img src="${eventImage}" alt="${event.title}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=400&h=200&fit=crop'">
+                            <!-- Status Badge -->
+                            <div class="absolute top-2 right-2">
+                                <span class="px-2 py-1 text-xs font-bold rounded-full ${statusClass === 'status-published' ? 'bg-green-500' : statusClass === 'status-draft' ? 'bg-yellow-500' : 'bg-gray-500'} text-white shadow-lg">
+                                    ${event.status || 'draft'}
+                                </span>
+                            </div>
+                            ${needsApproval ? `
+                            <div class="absolute top-2 left-2">
+                                <span class="px-2 py-1 text-xs font-bold rounded-full bg-orange-500 text-white shadow-lg">
+                                    Needs Approval
+                                </span>
+                            </div>
+                            ` : ''}
+                        </div>
+                        
+                        <!-- Details Below -->
+                        <div class="p-5">
+                            <!-- Title and Type -->
+                            <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2">${event.title}</h3>
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="px-3 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700">
+                                    ${event.eventType}
+                                </span>
+                            </div>
+                            
+                            <!-- Date and Attendees -->
+                            <div class="space-y-2 mb-4 text-sm text-gray-600">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span>${startDate}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                    </svg>
+                                    <span>${attendeeCount}/${maxAttendees} Attendees</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="flex gap-2 pt-3 border-t border-gray-100">
+                                ${needsApproval ? `
+                                <button onclick="approveEvent('${event._id}')" class="flex-1 px-3 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm font-medium transition flex items-center justify-center gap-1" title="Approve">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span>Approve</span>
+                                </button>
+                                ` : ''}
+                                <button onclick="viewEvent('${event._id}')" class="flex-1 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition flex items-center justify-center gap-1" title="View">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                    <span>View</span>
+                                </button>
+                                <button onclick="editEvent('${event._id}')" class="flex-1 px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm font-medium transition flex items-center justify-center gap-1" title="Edit">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                    <span>Edit</span>
+                                </button>
+                                <button onclick="deleteEvent('${event._id}')" class="flex-1 px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition flex items-center justify-center gap-1" title="Delete">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                    <span>Delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Load users
+        async function loadUsers() {
+            showLoading();
+            try {
+                const response = await window.AlumNeticsAPI.getUsers();
+                console.log('Load users response:', response);
+                
+                if (response.success) {
+                    // Handle different response structures
+                    let users = response.data;
+                    
+                    if (!Array.isArray(users)) {
+                        if (users && users.users && Array.isArray(users.users)) {
+                            users = users.users;
+                        } else {
+                            console.warn('Users data is not an array:', users);
+                            users = [];
+                        }
+                    }
+                    
+                    allUsers = users;
+                    displayUsers(allUsers);
+                } else {
+                    showError('Failed to load users');
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+                showError('Failed to load users');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Display users in table
+        function displayUsers(users) {
+            const tbody = document.getElementById('usersTableBody');
+            
+            // Safety check
+            if (!Array.isArray(users)) {
+                console.warn('displayUsers called with non-array:', users);
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Error loading users</td></tr>';
+                return;
+            }
+            
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">No users found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => {
+                const joinedDate = new Date(user.createdAt).toLocaleDateString();
+                const roleColors = {
+                    'student': 'bg-blue-100 text-blue-700',
+                    'alumni': 'bg-purple-100 text-purple-700',
+                    'faculty': 'bg-green-100 text-green-700',
+                    'admin': 'bg-red-100 text-red-700'
+                };
+                const roleClass = roleColors[user.role] || 'bg-gray-100 text-gray-700';
+                const initials = user.fullName ? user.fullName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : '?';
+                
+                return `
+                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                        <td class="py-4 px-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                    ${initials}
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-900">${user.fullName || 'N/A'}</div>
+                                    <div class="text-sm text-gray-500">${user.email}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <span class="px-3 py-1 text-xs font-medium rounded-full ${roleClass}">
+                                ${user.role}
+                            </span>
+                        </td>
+                        <td class="py-4 px-4 text-sm text-gray-600">${user.institution?.name || 'N/A'}</td>
+                        <td class="py-4 px-4 text-sm text-gray-600">${joinedDate}</td>
+                        <td class="py-4 px-4">
+                            <button onclick="viewUser('${user._id}')" class="text-blue-600 hover:text-blue-800 text-sm font-medium transition">
+                                View Profile
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Event modal functions
+        function openCreateEventModal() {
+            editingEventId = null;
+            document.getElementById('modalTitle').textContent = 'Create New Event';
+            document.getElementById('eventForm').reset();
+            document.getElementById('eventId').value = '';
+            document.getElementById('eventModal').classList.add('active');
+        }
+
+        // Image handling functions
+        let uploadedImageData = null;
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                showError('Please select a valid image file');
+                return;
+            }
+
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showError('Image size should be less than 5MB');
+                return;
+            }
+
+            // Read file and create preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedImageData = e.target.result;
+                
+                // Show preview
+                document.getElementById('previewImage').src = e.target.result;
+                document.getElementById('imageFileName').textContent = file.name;
+                document.getElementById('imagePreview').classList.remove('hidden');
+                document.getElementById('uploadButtonText').textContent = 'Change Image';
+                
+                // Clear URL input if file is uploaded
+                document.getElementById('eventImageUrl').value = '';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeImage() {
+            uploadedImageData = null;
+            document.getElementById('eventImageFile').value = '';
+            document.getElementById('eventImageUrl').value = '';
+            document.getElementById('imagePreview').classList.add('hidden');
+            document.getElementById('uploadButtonText').textContent = 'Upload Image';
+        }
+
+        // Update URL input to show preview
+        document.getElementById('eventImageUrl').addEventListener('input', function(e) {
+            const url = e.target.value.trim();
+            if (url) {
+                // Clear file upload
+                uploadedImageData = null;
+                document.getElementById('eventImageFile').value = '';
+                
+                // Show preview
+                document.getElementById('previewImage').src = url;
+                document.getElementById('imageFileName').textContent = 'External image URL';
+                document.getElementById('imagePreview').classList.remove('hidden');
+            } else if (!uploadedImageData) {
+                document.getElementById('imagePreview').classList.add('hidden');
+            }
+        });
+
+        function closeEventModal() {
+            document.getElementById('eventModal').classList.remove('active');
+            editingEventId = null;
+            removeImage(); // Clear image when closing modal
+        }
+
+        function setupEventModeToggle() {
+            const modeRadios = document.querySelectorAll('input[name="eventMode"]');
+            modeRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const venueSection = document.getElementById('venueSection');
+                    const virtualSection = document.getElementById('virtualSection');
+                    
+                    if (this.value === 'virtual') {
+                        venueSection.classList.add('hidden');
+                        virtualSection.classList.remove('hidden');
+                    } else if (this.value === 'physical') {
+                        venueSection.classList.remove('hidden');
+                        virtualSection.classList.add('hidden');
+                    } else { // hybrid
+                        venueSection.classList.remove('hidden');
+                        virtualSection.classList.remove('hidden');
+                    }
+                });
+            });
+        }
+
+        // Event form submission
+        document.getElementById('eventForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            showLoading();
+
+            const eventMode = document.querySelector('input[name="eventMode"]:checked').value;
+            const eventData = {
+                title: document.getElementById('eventTitle').value,
+                description: document.getElementById('eventDescription').value,
+                eventType: document.getElementById('eventType').value,
+                category: document.getElementById('eventCategory').value || undefined,
+                startDate: document.getElementById('eventStartDate').value,
+                endDate: document.getElementById('eventEndDate').value,
+                isVirtual: eventMode === 'virtual',
+                status: document.getElementById('eventStatus').value,
+                maxAttendees: parseInt(document.getElementById('maxAttendees').value) || undefined,
+                registrationFee: {
+                    amount: parseFloat(document.getElementById('registrationFee').value) || 0,
+                    currency: 'USD'
+                }
+            };
+
+            // Add image data if available
+            const imageUrl = document.getElementById('eventImageUrl').value.trim();
+            if (uploadedImageData) {
+                eventData.coverImage = uploadedImageData; // Base64 data
+            } else if (imageUrl) {
+                eventData.imageUrl = imageUrl; // External URL
+            }
+
+            if (eventMode !== 'virtual') {
+                eventData.venue = {
+                    name: document.getElementById('venueName').value
+                };
+            }
+
+            if (eventMode !== 'physical') {
+                eventData.virtualLink = document.getElementById('virtualLink').value;
+            }
+
+            try {
+                let response;
+                if (editingEventId) {
+                    response = await window.AlumNeticsAPI.updateEvent(editingEventId, eventData);
+                } else {
+                    response = await window.AlumNeticsAPI.createEvent(eventData);
+                }
+
+                if (response.success) {
+                    showSuccess('Event saved successfully!');
+                    closeEventModal();
+                    await loadEvents();
+                } else {
+                    showError(response.message || 'Failed to save event');
+                }
+            } catch (error) {
+                console.error('Error saving event:', error);
+                showError('Failed to save event');
+            } finally {
+                hideLoading();
+            }
+        });
+
+        // Event actions
+        async function viewEvent(eventId) {
+            const event = allEvents.find(e => e._id === eventId);
+            if (!event) {
+                alert('Event not found!');
+                return;
+            }
+
+            const startDate = new Date(event.startDate).toLocaleString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            const endDate = new Date(event.endDate).toLocaleString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            const attendeeCount = event.attendees ? event.attendees.length : 0;
+            const maxAttendees = event.maxAttendees || 'Unlimited';
+            const eventImage = event.coverImage || event.imageUrl;
+
+            // Create modal HTML
+            const modalHTML = `
+                <div id="viewEventModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onclick="closeViewModal()">
+                    <div class="bg-white rounded-3xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+                        <!-- Header with Image -->
+                        <div class="relative h-64 bg-gradient-to-br from-purple-400 to-purple-600">
+                            ${eventImage ? `
+                                <img src="${eventImage}" alt="${event.title}" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                            ` : ''}
+                            <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+                                <h2 class="text-3xl font-bold mb-2">${event.title}</h2>
+                                <div class="flex gap-2">
+                                    <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-sm font-medium">
+                                        ${event.eventType}
+                                    </span>
+                                    <span class="px-3 py-1 ${event.status === 'published' ? 'bg-green-500' : 'bg-yellow-500'} rounded-full text-sm font-bold">
+                                        ${event.status || 'draft'}
+                                    </span>
+                                </div>
+                            </div>
+                            <button onclick="closeViewModal()" class="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-md hover:bg-white/30 rounded-full flex items-center justify-center transition">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="p-6 space-y-6">
+                            <!-- Description -->
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900 mb-2">📝 Description</h3>
+                                <p class="text-gray-600 leading-relaxed">${event.description || 'No description provided'}</p>
+                            </div>
+
+                            <!-- Date & Time -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-purple-50 rounded-xl p-4">
+                                    <h4 class="text-sm font-semibold text-purple-900 mb-2">🗓️ Start Date</h4>
+                                    <p class="text-gray-700">${startDate}</p>
+                                </div>
+                                <div class="bg-purple-50 rounded-xl p-4">
+                                    <h4 class="text-sm font-semibold text-purple-900 mb-2">🏁 End Date</h4>
+                                    <p class="text-gray-700">${endDate}</p>
+                                </div>
+                            </div>
+
+                            <!-- Location -->
+                            <div class="bg-blue-50 rounded-xl p-4">
+                                <h4 class="text-sm font-semibold text-blue-900 mb-2">📍 Location</h4>
+                                ${event.isVirtual ? `
+                                    <p class="text-gray-700">🌐 Virtual Event</p>
+                                    ${event.virtualLink ? `<a href="${event.virtualLink}" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm underline">Join Link</a>` : ''}
+                                ` : event.venue ? `
+                                    <p class="text-gray-700">${event.venue.name || 'Physical Venue'}</p>
+                                    ${event.venue.address ? `<p class="text-sm text-gray-500">${event.venue.address}</p>` : ''}
+                                ` : '<p class="text-gray-500">Location not specified</p>'}
+                            </div>
+
+                            <!-- Attendees -->
+                            <div class="bg-green-50 rounded-xl p-4">
+                                <h4 class="text-sm font-semibold text-green-900 mb-2">👥 Attendees</h4>
+                                <p class="text-gray-700">${attendeeCount} / ${maxAttendees} registered</p>
+                            </div>
+
+                            ${event.registrationDeadline ? `
+                            <div class="bg-orange-50 rounded-xl p-4">
+                                <h4 class="text-sm font-semibold text-orange-900 mb-2">⏰ Registration Deadline</h4>
+                                <p class="text-gray-700">${new Date(event.registrationDeadline).toLocaleDateString()}</p>
+                            </div>
+                            ` : ''}
+
+                            <!-- Action Buttons -->
+                            <div class="flex gap-3 pt-4 border-t">
+                                <button onclick="editEvent('${event._id}')" class="flex-1 px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white rounded-xl font-semibold transition flex items-center justify-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                    Edit Event
+                                </button>
+                                <button onclick="deleteEvent('${event._id}')" class="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl font-semibold transition flex items-center justify-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                    Delete Event
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Remove existing modal if any
+            const existingModal = document.getElementById('viewEventModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // Add modal to body
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        function closeViewModal() {
+            const modal = document.getElementById('viewEventModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        async function editEvent(eventId) {
+            const event = allEvents.find(e => e._id === eventId);
+            if (!event) return;
+
+            editingEventId = eventId;
+            document.getElementById('modalTitle').textContent = 'Edit Event';
+            document.getElementById('eventId').value = eventId;
+            document.getElementById('eventTitle').value = event.title;
+            document.getElementById('eventDescription').value = event.description;
+            document.getElementById('eventType').value = event.eventType;
+            document.getElementById('eventCategory').value = event.category || '';
+            
+            // Format dates for datetime-local input
+            document.getElementById('eventStartDate').value = new Date(event.startDate).toISOString().slice(0, 16);
+            document.getElementById('eventEndDate').value = new Date(event.endDate).toISOString().slice(0, 16);
+            
+            // Set event mode
+            const eventMode = event.isVirtual ? 'virtual' : (event.virtualLink && event.venue ? 'hybrid' : 'physical');
+            document.querySelector(`input[name="eventMode"][value="${eventMode}"]`).checked = true;
+            document.querySelector(`input[name="eventMode"][value="${eventMode}"]`).dispatchEvent(new Event('change'));
+            
+            if (event.venue) {
+                document.getElementById('venueName').value = event.venue.name || '';
+            }
+            
+            if (event.virtualLink) {
+                document.getElementById('virtualLink').value = event.virtualLink;
+            }
+            
+            document.getElementById('maxAttendees').value = event.maxAttendees || '';
+            document.getElementById('registrationFee').value = event.registrationFee?.amount || 0;
+            document.getElementById('eventStatus').value = event.status || 'draft';
+            
+            // Load image if available
+            if (event.coverImage || event.imageUrl) {
+                const imageUrl = event.coverImage || event.imageUrl;
+                document.getElementById('eventImageUrl').value = imageUrl.startsWith('http') ? imageUrl : '';
+                document.getElementById('previewImage').src = imageUrl;
+                document.getElementById('imageFileName').textContent = event.coverImage ? 'Uploaded image' : 'External image URL';
+                document.getElementById('imagePreview').classList.remove('hidden');
+                
+                if (!imageUrl.startsWith('http')) {
+                    uploadedImageData = imageUrl; // Base64 data
+                }
+            }
+            
+            document.getElementById('eventModal').classList.add('active');
+        }
+
+        async function approveEvent(eventId) {
+            if (!confirm('Are you sure you want to approve and publish this event?')) {
+                return;
+            }
+
+            showLoading();
+            try {
+                const response = await window.AlumNeticsAPI.approveEvent(eventId);
+                if (response.success) {
+                    showSuccess('Event approved and published successfully!');
+                    await loadEvents();
+                    await loadOverviewStats(); // Refresh stats
+                } else {
+                    showError(response.message || 'Failed to approve event');
+                }
+            } catch (error) {
+                console.error('Error approving event:', error);
+                showError('Failed to approve event');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function deleteEvent(eventId) {
+            if (!confirm('Are you sure you want to delete this event? This action cannot be undone.')) {
+                return;
+            }
+
+            showLoading();
+            try {
+                const response = await window.AlumNeticsAPI.deleteEvent(eventId);
+                if (response.success) {
+                    showSuccess('Event deleted successfully!');
+                    await loadEvents();
+                } else {
+                    showError(response.message || 'Failed to delete event');
+                }
+            } catch (error) {
+                console.error('Error deleting event:', error);
+                showError('Failed to delete event');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // User actions
+        function viewUser(userId) {
+            console.log('Viewing user:', userId);
+            alert('View user profile - Coming soon!');
+        }
+
+        // Utility functions
+        function showLoading() {
+            document.getElementById('loadingIndicator').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingIndicator').classList.add('hidden');
+        }
+
+        function showSuccess(message) {
+            alert(message);
+        }
+
+        function showError(message) {
+            alert('Error: ' + message);
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userData');
+                window.location.href = '../auth/login.html';
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>

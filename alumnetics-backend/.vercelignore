@@ -1,0 +1,8 @@
+node_modules
+.env
+.env.local
+*.log
+.DS_Store
+server.original.js
+server-vercel.js
+api/

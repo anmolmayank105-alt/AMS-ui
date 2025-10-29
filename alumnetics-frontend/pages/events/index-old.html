@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - ALUMNETICS | Student Events & Reunions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Card animations */
+        .event-card { 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .event-card:hover { 
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Image zoom effect */
+        .event-card img {
+            transition: transform 0.5s ease;
+        }
+        .event-card:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Gradient overlays for event types */
+        .event-type-webinar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .event-type-workshop { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .event-type-meetup { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .event-type-reunion { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .event-type-hackathon { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .event-type-career { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+        .event-type-conference { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+        .event-type-seminar { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
+        .event-type-default { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+
+        /* Floating animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .float { animation: float 6s ease-in-out infinite; }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        .shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        /* Badge styles */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Glass morphism effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Skeleton loader */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Tab active state */
+        .tab-active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Status badges */
+        .status-open { background: #10b981; }
+        .status-full { background: #ef4444; }
+        .status-upcoming { background: #3b82f6; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Modern Header with Glass Effect -->
+    <header class="glass sticky top-0 z-50 border-b border-white/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="h-20 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center">
+                        <svg class="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-black text-white">Events Hub</div>
+                        <div class="text-sm text-white/80">Connect, Learn & Grow</div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="goBack()" class="px-5 py-2.5 bg-white/20 hover:bg-white/30 text-white rounded-xl font-medium transition flex items-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        <span>Dashboard</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section with Stats -->
+    <section class="relative overflow-hidden py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h1 class="text-5xl md:text-6xl font-black text-white mb-4 tracking-tight">
+                    Discover Amazing Events
+                </h1>
+                <p class="text-xl text-white/90 max-w-2xl mx-auto">
+                    Connect with alumni, attend workshops, and grow your network through incredible experiences
+                </p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div class="glass p-6 rounded-2xl text-center">
+                    <div class="text-4xl font-black text-white mb-2" id="totalEvents">0</div>
+                    <div class="text-white/80 font-medium">Total Events</div>
+                </div>
+                <div class="glass p-6 rounded-2xl text-center">
+                    <div class="text-4xl font-black text-white mb-2" id="upcomingCount">0</div>
+                    <div class="text-white/80 font-medium">Upcoming</div>
+                </div>
+                <div class="glass p-6 rounded-2xl text-center">
+                    <div class="text-4xl font-black text-white mb-2" id="categoriesCount">0</div>
+                    <div class="text-white/80 font-medium">Categories</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters & Search -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
+        <div class="bg-white rounded-3xl shadow-2xl p-6 md:p-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="md:col-span-2">
+                    <div class="relative">
+                        <input id="search" type="text" placeholder="Search events..." 
+                               class="w-full px-5 py-4 pl-12 rounded-2xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 outline-none transition text-lg">
+                        <svg class="w-6 h-6 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <select id="typeFilter" class="w-full px-4 py-4 rounded-2xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 outline-none transition text-lg">
+                        <option value="">All Types</option>
+                        <option value="webinar">Webinar</option>
+                        <option value="workshop">Workshop</option>
+                        <option value="meetup">Meetup</option>
+                        <option value="reunion">Reunion</option>
+                        <option value="hackathon">Hackathon</option>
+                        <option value="career">Career Fair</option>
+                        <option value="conference">Conference</option>
+                        <option value="seminar">Seminar</option>
+                    </select>
+                </div>
+                <div>
+                    <select id="locationFilter" class="w-full px-4 py-4 rounded-2xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 outline-none transition text-lg">
+                        <option value="">All Locations</option>
+                        <option value="online">🌐 Online</option>
+                        <option value="hybrid">📍 Hybrid</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div class="flex gap-2">
+                    <button id="tab-all" class="tab-active px-6 py-3 rounded-xl font-semibold transition">
+                        All Events
+                    </button>
+                    <button id="tab-upcoming" class="px-6 py-3 rounded-xl font-semibold text-gray-600 hover:bg-gray-100 transition">
+                        Upcoming
+                    </button>
+                    <button id="tab-past" class="px-6 py-3 rounded-xl font-semibold text-gray-600 hover:bg-gray-100 transition">
+                        Past
+                    </button>
+                </div>
+                <div class="text-gray-600 font-medium" id="resultsCount">
+                    Showing <span class="text-purple-600 font-bold">0</span> events
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Grid -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pb-16">
+        <!-- Loading State -->
+        <div id="loadingState" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white rounded-3xl overflow-hidden shadow-lg shimmer h-96"></div>
+            <div class="bg-white rounded-3xl overflow-hidden shadow-lg shimmer h-96"></div>
+            <div class="bg-white rounded-3xl overflow-hidden shadow-lg shimmer h-96"></div>
+        </div>
+
+        <!-- Events Container -->
+        <div id="eventsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden">
+            <!-- Event Card Template -->
+            <article class="bg-white rounded-2xl border border-gray-100 card-hover overflow-hidden" data-type="webinar" data-location="online" data-date="2025-10-12" data-text="ai webinar machine learning alumni talk">
+                <div class="h-28 bg-gradient-to-r from-blue-500 to-indigo-600 relative">
+                    <div class="absolute top-4 left-4 bg-white/90 text-gray-800 px-3 py-1 rounded-md text-xs font-semibold shadow">Online</div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <div class="text-xs opacity-90">Sun, Oct 12 • 6:00 PM IST</div>
+                        <h3 class="text-lg font-bold">AI Futures: Alumni Talk & Live Q&A</h3>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <p class="text-gray-600 text-sm">Join industry leaders to explore the latest in AI/ML and how to launch your career path.</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="px-2 py-1 text-xs rounded bg-blue-50 text-blue-700">Webinar</span>
+                        <span class="px-2 py-1 text-xs rounded bg-purple-50 text-purple-700">AI/ML</span>
+                        <span class="px-2 py-1 text-xs rounded bg-emerald-50 text-emerald-700">Career</span>
+                    </div>
+                    <div class="mt-5 flex items-center justify-between">
+                        <div class="text-sm text-gray-500">👥 320 registered</div>
+                        <div class="flex gap-2">
+                            <button onclick="rsvp(this)" class="px-3 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium">RSVP</button>
+                            <button class="px-3 py-2 rounded-lg border text-sm font-medium">Details</button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="bg-white rounded-2xl border border-gray-100 card-hover overflow-hidden" data-type="workshop" data-location="bangalore" data-date="2025-11-05" data-text="react workshop hands-on frontend ui">
+                <div class="h-28 bg-gradient-to-r from-emerald-500 to-teal-600 relative">
+                    <div class="absolute top-4 left-4 bg-white/90 text-gray-800 px-3 py-1 rounded-md text-xs font-semibold shadow">Bangalore</div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <div class="text-xs opacity-90">Wed, Nov 5 • 10:00 AM IST</div>
+                        <h3 class="text-lg font-bold">Modern React Workshop (Hands-on)</h3>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <p class="text-gray-600 text-sm">Level up your frontend skills with alumni mentors. Limited seats with live coding sessions.</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="px-2 py-1 text-xs rounded bg-emerald-50 text-emerald-700">Workshop</span>
+                        <span class="px-2 py-1 text-xs rounded bg-cyan-50 text-cyan-700">Frontend</span>
+                        <span class="px-2 py-1 text-xs rounded bg-yellow-50 text-yellow-700">Hands-on</span>
+                    </div>
+                    <div class="mt-5 flex items-center justify-between">
+                        <div class="text-sm text-gray-500">👥 80 seats</div>
+                        <div class="flex gap-2">
+                            <button onclick="rsvp(this)" class="px-3 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium">RSVP</button>
+                            <button class="px-3 py-2 rounded-lg border text-sm font-medium">Details</button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="bg-white rounded-2xl border border-gray-100 card-hover overflow-hidden" data-type="meetup" data-location="mumbai" data-date="2025-09-28" data-text="alumni meetup networking social">
+                <div class="h-28 bg-gradient-to-r from-orange-500 to-rose-600 relative">
+                    <div class="absolute top-4 left-4 bg-white/90 text-gray-800 px-3 py-1 rounded-md text-xs font-semibold shadow">Mumbai</div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <div class="text-xs opacity-90">Sun, Sep 28 • 5:30 PM IST</div>
+                        <h3 class="text-lg font-bold">Alumni & Students Mixer</h3>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <p class="text-gray-600 text-sm">Casual networking to connect students with alumni across industries and batches.</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="px-2 py-1 text-xs rounded bg-orange-50 text-orange-700">Meetup</span>
+                        <span class="px-2 py-1 text-xs rounded bg-pink-50 text-pink-700">Networking</span>
+                    </div>
+                    <div class="mt-5 flex items-center justify-between">
+                        <div class="text-sm text-gray-500">👥 120 going</div>
+                        <div class="flex gap-2">
+                            <button onclick="rsvp(this)" class="px-3 py-2 rounded-lg bg-orange-600 text-white text-sm font-medium">RSVP</button>
+                            <button class="px-3 py-2 rounded-lg border text-sm font-medium">Details</button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="bg-white rounded-2xl border border-gray-100 card-hover overflow-hidden" data-type="reunion" data-location="delhi" data-date="2025-12-15" data-text="golden jubilee reunion campus tour gala">
+                <div class="h-28 bg-gradient-to-r from-purple-500 to-fuchsia-600 relative">
+                    <div class="absolute top-4 left-4 bg-white/90 text-gray-800 px-3 py-1 rounded-md text-xs font-semibold shadow">Delhi Campus</div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <div class="text-xs opacity-90">Mon, Dec 15 • 4:00 PM IST</div>
+                        <h3 class="text-lg font-bold">Golden Jubilee Reunion & Gala</h3>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <p class="text-gray-600 text-sm">Special reunion with campus tour, dinner gala, and keynote by distinguished alumni.</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="px-2 py-1 text-xs rounded bg-purple-50 text-purple-700">Reunion</span>
+                        <span class="px-2 py-1 text-xs rounded bg-indigo-50 text-indigo-700">On Campus</span>
+                    </div>
+                    <div class="mt-5 flex items-center justify-between">
+                        <div class="text-sm text-gray-500">👥 500 expected</div>
+                        <div class="flex gap-2">
+                            <button onclick="rsvp(this)" class="px-3 py-2 rounded-lg bg-purple-600 text-white text-sm font-medium">RSVP</button>
+                            <button class="px-3 py-2 rounded-lg border text-sm font-medium">Details</button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="bg-white rounded-2xl border border-gray-100 card-hover overflow-hidden" data-type="hackathon" data-location="hyderabad" data-date="2025-10-25" data-text="24h hackathon build sprint">
+                <div class="h-28 bg-gradient-to-r from-cyan-500 to-sky-600 relative">
+                    <div class="absolute top-4 left-4 bg-white/90 text-gray-800 px-3 py-1 rounded-md text-xs font-semibold shadow">Hyderabad</div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <div class="text-xs opacity-90">Sat, Oct 25 • 9:00 AM IST</div>
+                        <h3 class="text-lg font-bold">24-Hour Build Sprint Hackathon</h3>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <p class="text-gray-600 text-sm">Team up with alumni mentors to prototype ideas and win prizes. Food and swag provided.</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="px-2 py-1 text-xs rounded bg-cyan-50 text-cyan-700">Hackathon</span>
+                        <span class="px-2 py-1 text-xs rounded bg-rose-50 text-rose-700">In-person</span>
+                    </div>
+                    <div class="mt-5 flex items-center justify-between">
+                        <div class="text-sm text-gray-500">👥 60 teams</div>
+                        <div class="flex gap-2">
+                            <button onclick="rsvp(this)" class="px-3 py-2 rounded-lg bg-cyan-600 text-white text-sm font-medium">RSVP</button>
+                            <button class="px-3 py-2 rounded-lg border text-sm font-medium">Details</button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="bg-white rounded-2xl border border-gray-100 card-hover overflow-hidden" data-type="career" data-location="pune" data-date="2025-11-20" data-text="career fair internships jobs campus recruiters">
+                <div class="h-28 bg-gradient-to-r from-amber-500 to-yellow-600 relative">
+                    <div class="absolute top-4 left-4 bg-white/90 text-gray-800 px-3 py-1 rounded-md text-xs font-semibold shadow">Pune</div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <div class="text-xs opacity-90">Thu, Nov 20 • 11:00 AM IST</div>
+                        <h3 class="text-lg font-bold">Alumni Career Fair 2025</h3>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <p class="text-gray-600 text-sm">Meet recruiters from alumni-led companies. Internship and full-time roles across domains.</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="px-2 py-1 text-xs rounded bg-amber-50 text-amber-700">Career</span>
+                        <span class="px-2 py-1 text-xs rounded bg-green-50 text-green-700">Recruiting</span>
+                    </div>
+                    <div class="mt-5 flex items-center justify-between">
+                        <div class="text-sm text-gray-500">👥 40+ companies</div>
+                        <div class="flex gap-2">
+                            <button onclick="rsvp(this)" class="px-3 py-2 rounded-lg bg-amber-600 text-white text-sm font-medium">RSVP</button>
+                            <button class="px-3 py-2 rounded-lg border text-sm font-medium">Details</button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <!-- Past -->
+        <div id="list-past" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 hidden">
+            <article class="bg-white rounded-2xl border border-gray-100 card-hover overflow-hidden" data-type="webinar" data-location="online" data-date="2025-06-10" data-text="resume masterclass">
+                <div class="h-28 bg-gradient-to-r from-zinc-500 to-slate-600 relative">
+                    <div class="absolute top-4 left-4 bg-white/90 text-gray-800 px-3 py-1 rounded-md text-xs font-semibold shadow">Online</div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <div class="text-xs opacity-90">Mon, Jun 10 • 7:00 PM IST</div>
+                        <h3 class="text-lg font-bold">Resume Masterclass by Alumni Recruiters</h3>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <p class="text-gray-600 text-sm">Insider tips from alumni hiring managers on landing interviews and offers.</p>
+                    <div class="mt-5 flex items-center justify-between">
+                        <div class="text-sm text-gray-500">👥 540 attended</div>
+                        <button class="px-3 py-2 rounded-lg border text-sm font-medium">View Recap</button>
+                    </div>
+                </div>
+            </article>
+
+            <article class="bg-white rounded-2xl border border-gray-100 card-hover overflow-hidden" data-type="meetup" data-location="bangalore" data-date="2025-05-02" data-text="tea talk alumni">
+                <div class="h-28 bg-gradient-to-r from-teal-500 to-emerald-600 relative">
+                    <div class="absolute top-4 left-4 bg-white/90 text-gray-800 px-3 py-1 rounded-md text-xs font-semibold shadow">Bangalore</div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <div class="text-xs opacity-90">Fri, May 2 • 6:00 PM IST</div>
+                        <h3 class="text-lg font-bold">Alumni Tea & Tech Talks</h3>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <p class="text-gray-600 text-sm">Lightning talks on product, data, and startups followed by open networking.</p>
+                    <div class="mt-5 flex items-center justify-between">
+                        <div class="text-sm text-gray-500">👥 150 attended</div>
+                        <button class="px-3 py-2 rounded-lg border text-sm font-medium">Photos</button>
+                    </div>
+                </div>
+            </article>
+
+            <article class="bg-white rounded-2xl border border-gray-100 card-hover overflow-hidden" data-type="workshop" data-location="delhi" data-date="2025-03-18" data-text="data science bootcamp">
+                <div class="h-28 bg-gradient-to-r from-fuchsia-500 to-purple-600 relative">
+                    <div class="absolute top-4 left-4 bg-white/90 text-gray-800 px-3 py-1 rounded-md text-xs font-semibold shadow">Delhi</div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <div class="text-xs opacity-90">Tue, Mar 18 • 9:30 AM IST</div>
+                        <h3 class="text-lg font-bold">Data Science Bootcamp (1-Day)</h3>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <p class="text-gray-600 text-sm">Hands-on introduction to modern data workflows with notebooks and dashboards.</p>
+                    <div class="mt-5 flex items-center justify-between">
+                        <div class="text-sm text-gray-500">👥 85 attended</div>
+                        <button class="px-3 py-2 rounded-lg border text-sm font-medium">Resources</button>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <!-- Empty state -->
+        <div id="empty" class="hidden text-center py-16">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 mb-4">📭</div>
+            <h4 class="text-lg font-semibold">No events match your filters</h4>
+            <p class="text-gray-600">Try clearing some filters or adjusting the date range.</p>
+        </div>
+    </main>
+
+    <script>
+        const $ = (sel) => document.querySelector(sel);
+        const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+        const filters = {
+            search: $('#search'),
+            type: $('#type'),
+            location: $('#location'),
+            from: $('#from'),
+            to: $('#to'),
+        };
+
+        const tabUpcoming = $('#tab-upcoming');
+        const tabPast = $('#tab-past');
+        const listUpcoming = $('#list-upcoming');
+        const listPast = $('#list-past');
+        const emptyState = $('#empty');
+
+        function setTab(active) {
+            if (active === 'upcoming') {
+                tabUpcoming.classList.add('tab-active');
+                tabPast.classList.remove('tab-active');
+                listUpcoming.classList.remove('hidden');
+                listPast.classList.add('hidden');
+            } else {
+                tabPast.classList.add('tab-active');
+                tabUpcoming.classList.remove('tab-active');
+                listPast.classList.remove('hidden');
+                listUpcoming.classList.add('hidden');
+            }
+            applyFilters();
+        }
+
+        function inRange(dateStr, fromStr, toStr) {
+            if (!fromStr && !toStr) return true;
+            const d = new Date(dateStr);
+            if (fromStr && d < new Date(fromStr)) return false;
+            if (toStr && d > new Date(toStr)) return false;
+            return true;
+        }
+
+        function applyFilters() {
+            const activeList = listUpcoming.classList.contains('hidden') ? listPast : listUpcoming;
+            const cards = Array.from(activeList.children);
+            const q = (filters.search.value || '').toLowerCase().trim();
+            const t = filters.type.value;
+            const loc = filters.location.value;
+            const from = filters.from.value;
+            const to = filters.to.value;
+
+            let visible = 0;
+            cards.forEach(card => {
+                const text = (card.getAttribute('data-text') || '').toLowerCase();
+                const type = card.getAttribute('data-type') || '';
+                const location = card.getAttribute('data-location') || '';
+                const date = card.getAttribute('data-date') || '';
+
+                const matchesText = !q || text.includes(q);
+                const matchesType = !t || type === t;
+                const matchesLoc = !loc || location === loc;
+                const matchesDate = inRange(date, from, to);
+
+                const show = matchesText && matchesType && matchesLoc && matchesDate;
+                card.classList.toggle('hidden', !show);
+                if (show) visible++;
+            });
+
+            emptyState.classList.toggle('hidden', visible !== 0);
+            activeList.classList.toggle('hidden', visible === 0);
+        }
+
+        function rsvp(btn) {
+            btn.disabled = true;
+            btn.classList.add('opacity-60');
+            btn.textContent = 'RSVP’d';
+        }
+
+        // Wire up events
+        [filters.search, filters.type, filters.location, filters.from, filters.to].forEach(el => {
+            el && el.addEventListener('input', applyFilters);
+            el && el.addEventListener('change', applyFilters);
+        });
+        tabUpcoming.addEventListener('click', () => setTab('upcoming'));
+        tabPast.addEventListener('click', () => setTab('past'));
+
+        // Initialize with backend integration
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check authentication
+            if (!AlumNeticsAPI?.isAuthenticated && !AlumNeticsAPI?.isAuthenticated()) {
+                console.log('Authentication check skipped - API not available');
+            }
+            
+            // Initialize original functionality
+            setTab('upcoming');
+        });
+    </script>
+    
+    <!-- Include API service and utilities -->
+    <script src="../../assets/js/api-service.js"></script>
+    <script src="../../assets/js/utils.js"></script>
+<script src="chatbot.js"></script>
+</body>
+</html>

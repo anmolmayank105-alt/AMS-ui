@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Profile - Ankita Anand - ALUMNETICS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;overflow-x:hidden}
+    .animated-bg{position:relative}
+    .animated-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(600px 300px at 0% 0%,rgba(255,255,255,.15),transparent),radial-gradient(600px 300px at 100% 100%,rgba(255,255,255,.12),transparent);z-index:0}
+    .card{background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.25)}
+    .lift{transition:transform .25s ease,box-shadow .25s ease}
+    .lift:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.12)}
+  </style>
+</head>
+<body class="animated-bg">
+  <!-- Header -->
+  <header class="relative z-10 bg-white/90 backdrop-blur-md border-b border-white/20 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="../../logo.jpeg" alt="AlumNetics logo" class="w-10 h-10 rounded-xl object-cover border border-white/40 shadow" />
+        <div class="text-xl font-semibold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">ALUMNETICS</div>
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="student-dashboard.html" class="px-3 py-2 text-sm rounded-lg text-purple-700 hover:text-purple-900">Student Dashboard</a>
+        <span class="px-3 py-2 text-sm rounded-lg bg-purple-50 text-purple-700">Profile</span>
+        <!-- Edit Profile button will be added here by profile.js -->
+      </div>
+    </div>
+  </header>
+
+  <main class="relative z-10 max-w-7xl mx-auto px-4 py-8 space-y-6">
+    <!-- Profile Header Card -->
+    <section class="card rounded-3xl p-6 shadow-2xl lift">
+      <div class="flex flex-col md:flex-row md:items-center gap-6">
+        <div class="relative w-28 h-28 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+          AA
+          <span class="absolute -bottom-2 -right-2 px-2 py-0.5 text-[10px] rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">Active</span>
+        </div>
+        <div class="flex-1">
+          <h1 class="text-2xl font-extrabold text-gray-900">Ankita Anand</h1>
+          <p class="text-gray-700">B.Sc. Microbiology • Ram Lal Anand College • Delhi University</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <span class="text-xs px-2 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-100">Microbiology</span>
+            <span class="text-xs px-2 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-100">Public Health</span>
+            <span class="text-xs px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-100">Research</span>
+            <span class="text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">Data Analysis</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grid -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Left column -->
+      <div class="space-y-6 lg:col-span-2">
+        <!-- About -->
+        <div class="card rounded-2xl p-6 shadow-xl lift">
+          <h2 class="text-lg font-semibold text-gray-900 mb-2">About</h2>
+          <p class="text-sm text-gray-700 leading-6">
+            Final-year undergraduate in Microbiology passionate about infectious diseases, antimicrobial resistance, and community health.
+            Experienced with wet-lab techniques and basic data analysis for research projects. Looking for internships and mentorship in
+            public health or life sciences research.
+          </p>
+        </div>
+
+        <!-- Education & Academics -->
+        <div class="card rounded-2xl p-6 shadow-xl lift">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Education</h2>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center text-white text-sm">🎓</div>
+            <div>
+              <div class="font-semibold text-gray-900">B.Sc. Microbiology</div>
+              <div class="text-sm text-gray-700">Ram Lal Anand College, Delhi University</div>
+              <div class="text-xs text-gray-500">2022 – 2025 • CGPA: 8.6/10</div>
+              <ul class="mt-2 text-sm text-gray-700 list-disc pl-5">
+                <li>Coursework: Cell Biology, Genetics, Immunology, Biostatistics</li>
+                <li>Clubs: Microbiology Society, NSS Volunteer</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Projects -->
+        <div class="card rounded-2xl p-6 shadow-xl lift">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Projects</h2>
+          <div class="space-y-4">
+            <div class="p-4 rounded-xl border border-gray-200 bg-white/80">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="font-medium text-gray-900">Antimicrobial Resistance Study</div>
+                  <div class="text-xs text-gray-600">Lab-based analysis on E. coli isolates and susceptibility patterns.</div>
+                </div>
+                <span class="text-xs px-2 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-100">Wet Lab</span>
+              </div>
+            </div>
+            <div class="p-4 rounded-xl border border-gray-200 bg-white/80">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="font-medium text-gray-900">Microbiome Data Analysis</div>
+                  <div class="text-xs text-gray-600">Exploratory analysis of gut microbiome datasets using R.</div>
+                </div>
+                <span class="text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">Data</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Achievements -->
+        <div class="card rounded-2xl p-6 shadow-xl lift">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Achievements</h2>
+          <ul class="space-y-3 text-sm text-gray-700">
+            <li class="flex items-center gap-2"><span>🏅</span> Presented poster at College Research Symposium (2024)</li>
+            <li class="flex items-center gap-2"><span>🥈</span> Runner-up, Inter-College Biology Quiz (2023)</li>
+            <li class="flex items-center gap-2"><span>🤝</span> Led a community health awareness drive in Delhi</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Right column -->
+      <div class="space-y-6">
+        <!-- Contact -->
+        <div class="card rounded-2xl p-6 shadow-xl lift">
+          <h2 class="text-lg font-semibold text-gray-900 mb-3">Contact</h2>
+          <div class="space-y-2 text-sm">
+            <div class="flex items-center gap-2 text-gray-700"><span>📧</span> <a href="mailto:ankita.anand@example.com" class="hover:underline">ankita.anand@example.com</a></div>
+            <div class="flex items-center gap-2 text-gray-700"><span>📍</span> Delhi, India</div>
+            <div class="flex items-center gap-2 text-gray-700"><span>🔗</span> <a href="#" class="text-purple-700 hover:underline">LinkedIn</a> · <a href="#" class="text-purple-700 hover:underline">GitHub</a></div>
+          </div>
+        </div>
+
+        <!-- Skills -->
+        <div class="card rounded-2xl p-6 shadow-xl lift">
+          <h2 class="text-lg font-semibold text-gray-900 mb-3">Skills</h2>
+          <div class="flex flex-wrap gap-2">
+            <span class="text-xs px-2 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-100">Microbiology</span>
+            <span class="text-xs px-2 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-100">PCR</span>
+            <span class="text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">Aseptic Techniques</span>
+            <span class="text-xs px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-100">Data Analysis (R/Excel)</span>
+            <span class="text-xs px-2 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-100">Scientific Writing</span>
+          </div>
+        </div>
+
+        <!-- Interests -->
+        <div class="card rounded-2xl p-6 shadow-xl lift">
+          <h2 class="text-lg font-semibold text-gray-900 mb-3">Interests</h2>
+          <div class="flex flex-wrap gap-2 text-sm text-gray-700">
+            <span class="px-2 py-1 bg-white/70 rounded-lg border border-gray-200">Infectious Diseases</span>
+            <span class="px-2 py-1 bg-white/70 rounded-lg border border-gray-200">Public Health</span>
+            <span class="px-2 py-1 bg-white/70 rounded-lg border border-gray-200">Genetics</span>
+            <span class="px-2 py-1 bg-white/70 rounded-lg border border-gray-200">Community Service</span>
+          </div>
+        </div>
+
+        <!-- Availability -->
+        <div class="card rounded-2xl p-6 shadow-xl lift">
+          <h2 class="text-lg font-semibold text-gray-900 mb-3">Availability</h2>
+          <p class="text-sm text-gray-700">Open to: Internships • Research Assistant roles • Mentorship</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Privacy Settings Section -->
+    <section class="card rounded-2xl p-6 shadow-xl lift">
+      <div class="flex items-center justify-between mb-2 cursor-pointer" onclick="togglePrivacySettings()">
+        <div class="flex-1">
+          <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+            <span class="text-2xl">🔒</span> Privacy Settings
+          </h2>
+          <p class="text-sm text-gray-600 mt-1">Control who can see your profile information</p>
+        </div>
+        <button class="p-3 rounded-full hover:bg-gray-100 transition-all" id="privacyToggleIcon">
+          <svg class="w-6 h-6 text-gray-600 transform transition-transform duration-300" id="privacyChevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="space-y-4 mt-6 hidden" id="privacyOptionsContainer">
+        <!-- Profile Visibility -->
+        <div class="p-4 rounded-xl bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200">
+          <div class="flex items-center justify-between">
+            <div class="flex-1">
+              <h3 class="font-semibold text-gray-900 flex items-center gap-2">
+                👁️ Profile Visibility
+              </h3>
+              <p class="text-sm text-gray-600 mt-1">Make your profile visible to other users when they search</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer ml-4">
+              <input type="checkbox" id="profileVisibility" class="sr-only peer" checked>
+              <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-purple-600 peer-checked:to-blue-600"></div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Show Email -->
+        <div class="p-4 rounded-xl bg-white border border-gray-200">
+          <div class="flex items-center justify-between">
+            <div class="flex-1">
+              <h3 class="font-semibold text-gray-900 flex items-center gap-2">
+                📧 Show Email
+              </h3>
+              <p class="text-sm text-gray-600 mt-1">Display your email address on your public profile</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer ml-4">
+              <input type="checkbox" id="showEmail" class="sr-only peer">
+              <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-purple-600 peer-checked:to-blue-600"></div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Show Phone -->
+        <div class="p-4 rounded-xl bg-white border border-gray-200">
+          <div class="flex items-center justify-between">
+            <div class="flex-1">
+              <h3 class="font-semibold text-gray-900 flex items-center gap-2">
+                📱 Show Phone
+              </h3>
+              <p class="text-sm text-gray-600 mt-1">Display your phone number on your public profile</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer ml-4">
+              <input type="checkbox" id="showPhone" class="sr-only peer">
+              <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-purple-600 peer-checked:to-blue-600"></div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Allow Messages -->
+        <div class="p-4 rounded-xl bg-white border border-gray-200">
+          <div class="flex items-center justify-between">
+            <div class="flex-1">
+              <h3 class="font-semibold text-gray-900 flex items-center gap-2">
+                💬 Allow Messages
+              </h3>
+              <p class="text-sm text-gray-600 mt-1">Let other users send you direct messages</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer ml-4">
+              <input type="checkbox" id="allowMessages" class="sr-only peer" checked>
+              <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-purple-600 peer-checked:to-blue-600"></div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="flex justify-end pt-4">
+          <button 
+            id="savePrivacyBtn"
+            onclick="savePrivacySettings()" 
+            class="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
+            💾 Save Privacy Settings
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Delete Account Section (Full Width, Centered) -->
+    <section class="flex justify-center mt-6">
+      <div class="card rounded-xl p-4 shadow-lg border border-red-200 max-w-md w-full">
+        <div class="text-center">
+          <h2 class="text-sm font-semibold text-red-600 mb-1.5">⚠️ Danger Zone</h2>
+          <p class="text-xs text-gray-600 mb-3">Permanently delete account</p>
+          <button 
+            id="deleteAccountBtn" 
+            class="inline-block px-3 py-1.5 text-xs rounded-lg bg-red-600 hover:bg-red-700 text-white transition-all duration-200 shadow-sm hover:shadow-md"
+            onclick="confirmDeleteAccount()">
+            Delete Account
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Delete Account Confirmation Modal -->
+  <div id="deleteAccountModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+          <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900">Delete Account?</h3>
+      </div>
+      
+      <p class="text-gray-700">Are you absolutely sure you want to delete your account? This action is <strong>permanent</strong> and cannot be undone.</p>
+      
+      <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+        <p class="text-sm text-red-800">
+          <strong>This will permanently delete:</strong><br>
+          • Your profile and personal information<br>
+          • All your posts and connections<br>
+          • Your event registrations<br>
+          • All associated data
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <label for="confirmEmail" class="block text-sm font-medium text-gray-900">
+          To confirm, please type your email address:
+        </label>
+        <input 
+          type="email" 
+          id="confirmEmail" 
+          placeholder="Enter your email"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
+        />
+        <p id="emailError" class="text-xs text-red-600 hidden">Email does not match your account</p>
+      </div>
+
+      <div class="flex gap-3 pt-2">
+        <button 
+          onclick="closeDeleteModal()" 
+          class="flex-1 px-4 py-2 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-800 transition-all duration-200">
+          Cancel
+        </button>
+        <button 
+          id="confirmDeleteBtn"
+          onclick="deleteAccount()" 
+          class="flex-1 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white transition-all duration-200 opacity-50 cursor-not-allowed"
+          disabled>
+          Yes, Delete Forever
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- API Services and Profile Management -->
+  <script src="../../assets/js/api-service.js"></script>
+  <script src="../../assets/js/utils.js"></script>
+  <script src="../../assets/js/profile.js"></script>
+  <script src="../../chatbot.js"></script>
+  
+  <!-- Delete Account Functions -->
+  <script>
+    function confirmDeleteAccount() {
+      const modal = document.getElementById('deleteAccountModal');
+      const emailInput = document.getElementById('confirmEmail');
+      const confirmBtn = document.getElementById('confirmDeleteBtn');
+      const emailError = document.getElementById('emailError');
+      
+      if (modal) {
+        modal.classList.remove('hidden');
+        // Reset input and button state
+        if (emailInput) emailInput.value = '';
+        if (confirmBtn) {
+          confirmBtn.disabled = true;
+          confirmBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+        if (emailError) emailError.classList.add('hidden');
+      }
+    }
+
+    function closeDeleteModal() {
+      const modal = document.getElementById('deleteAccountModal');
+      const emailInput = document.getElementById('confirmEmail');
+      const emailError = document.getElementById('emailError');
+      
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+      if (emailInput) {
+        emailInput.value = '';
+      }
+      if (emailError) {
+        emailError.classList.add('hidden');
+      }
+    }
+
+    // Toggle privacy settings visibility
+    function togglePrivacySettings() {
+      const container = document.getElementById('privacyOptionsContainer');
+      const chevron = document.getElementById('privacyChevron');
+      
+      if (container.classList.contains('hidden')) {
+        container.classList.remove('hidden');
+        chevron.classList.add('rotate-180');
+      } else {
+        container.classList.add('hidden');
+        chevron.classList.remove('rotate-180');
+      }
+    }
+
+    // Load privacy settings from backend
+    async function loadPrivacySettings() {
+      try {
+        const response = await window.AlumNeticsAPI.getProfile();
+        if (response.success && response.data) {
+          const user = response.data.user || response.data;
+          const privacy = user.privacy || {};
+          
+          // Set checkbox values
+          document.getElementById('profileVisibility').checked = privacy.showProfile !== false;
+          document.getElementById('showEmail').checked = privacy.showEmail === true;
+          document.getElementById('showPhone').checked = privacy.showPhone === true;
+          document.getElementById('allowMessages').checked = privacy.allowMessages !== false;
+        }
+      } catch (error) {
+        console.error('Failed to load privacy settings:', error);
+      }
+    }
+
+    // Save privacy settings to backend
+    async function savePrivacySettings() {
+      try {
+        const saveBtn = document.getElementById('savePrivacyBtn');
+        saveBtn.disabled = true;
+        saveBtn.textContent = '💾 Saving...';
+        
+        const privacySettings = {
+          privacy: {
+            showProfile: document.getElementById('profileVisibility').checked,
+            showEmail: document.getElementById('showEmail').checked,
+            showPhone: document.getElementById('showPhone').checked,
+            allowMessages: document.getElementById('allowMessages').checked
+          }
+        };
+        
+        const response = await window.AlumNeticsAPI.updateProfile(privacySettings);
+        
+        if (response.success) {
+          // Show success message
+          saveBtn.textContent = '✅ Saved!';
+          saveBtn.classList.add('from-green-600', 'to-green-700');
+          saveBtn.classList.remove('from-purple-600', 'to-blue-600');
+          
+          setTimeout(() => {
+            saveBtn.textContent = '💾 Save Privacy Settings';
+            saveBtn.classList.remove('from-green-600', 'to-green-700');
+            saveBtn.classList.add('from-purple-600', 'to-blue-600');
+            saveBtn.disabled = false;
+          }, 2000);
+          
+          // Update localStorage
+          const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+          userData.privacy = privacySettings.privacy;
+          localStorage.setItem('userData', JSON.stringify(userData));
+        } else {
+          throw new Error(response.message || 'Failed to save settings');
+        }
+      } catch (error) {
+        console.error('Error saving privacy settings:', error);
+        const saveBtn = document.getElementById('savePrivacyBtn');
+        saveBtn.textContent = '❌ Failed';
+        saveBtn.disabled = false;
+        alert('Failed to save privacy settings: ' + error.message);
+        
+        setTimeout(() => {
+          saveBtn.textContent = '💾 Save Privacy Settings';
+        }, 2000);
+      }
+    }
+
+    // Validate email input and enable/disable delete button
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load privacy settings when page loads
+      loadPrivacySettings();
+      
+      const emailInput = document.getElementById('confirmEmail');
+      const confirmBtn = document.getElementById('confirmDeleteBtn');
+      const emailError = document.getElementById('emailError');
+      
+      if (emailInput && confirmBtn) {
+        emailInput.addEventListener('input', function() {
+          const enteredEmail = this.value.trim().toLowerCase();
+          const userData = localStorage.getItem('userData');
+          
+          if (userData) {
+            try {
+              const user = JSON.parse(userData);
+              const userEmail = user.email?.toLowerCase() || '';
+              
+              if (enteredEmail === userEmail) {
+                // Email matches - enable button
+                confirmBtn.disabled = false;
+                confirmBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                if (emailError) emailError.classList.add('hidden');
+              } else {
+                // Email doesn't match - disable button
+                confirmBtn.disabled = true;
+                confirmBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                if (enteredEmail.length > 0 && emailError) {
+                  emailError.classList.remove('hidden');
+                }
+              }
+            } catch (error) {
+              console.error('Error parsing user data:', error);
+            }
+          }
+        });
+      }
+    });
+
+    async function deleteAccount() {
+      const confirmBtn = document.getElementById('confirmDeleteBtn');
+      const emailInput = document.getElementById('confirmEmail');
+      const emailError = document.getElementById('emailError');
+      
+      if (!confirmBtn || confirmBtn.disabled) return;
+
+      // Double-check email matches
+      const enteredEmail = emailInput?.value.trim().toLowerCase();
+      const userData = localStorage.getItem('userData');
+      
+      if (!userData) {
+        alert('User data not found. Please login again.');
+        return;
+      }
+
+      try {
+        const user = JSON.parse(userData);
+        const userEmail = user.email?.toLowerCase() || '';
+        
+        if (enteredEmail !== userEmail) {
+          if (emailError) {
+            emailError.classList.remove('hidden');
+          }
+          return;
+        }
+      } catch (error) {
+        console.error('Error validating email:', error);
+        return;
+      }
+
+      try {
+        // Disable button and show loading state
+        confirmBtn.disabled = true;
+        const originalText = confirmBtn.innerHTML;
+        confirmBtn.innerHTML = `
+          <div class="flex items-center justify-center gap-2">
+            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+            Deleting...
+          </div>
+        `;
+
+        // Call the API to delete account
+        if (!window.AlumNeticsAPI) {
+          throw new Error('API service not available');
+        }
+
+        const response = await window.AlumNeticsAPI.deleteAccount();
+
+        if (response.success) {
+          // Show success message
+          if (window.AlumNeticsUtils) {
+            window.AlumNeticsUtils.showToast('Account deleted successfully. Redirecting...', 'success');
+          } else {
+            alert('Account deleted successfully. Redirecting to home page...');
+          }
+
+          // Redirect to landing page after a short delay
+          setTimeout(() => {
+            window.location.href = '../../index.html';
+          }, 2000);
+        } else {
+          throw new Error(response.message || 'Failed to delete account');
+        }
+      } catch (error) {
+        console.error('Delete account error:', error);
+        
+        // Re-enable button
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = 'Yes, Delete Forever';
+        confirmBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+        // Show error message
+        if (window.AlumNeticsUtils) {
+          window.AlumNeticsUtils.showToast(error.message || 'Failed to delete account. Please try again.', 'error');
+        } else {
+          alert(error.message || 'Failed to delete account. Please try again.');
+        }
+
+        // Close modal
+        closeDeleteModal();
+      }
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('deleteAccountModal')?.addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeDeleteModal();
+      }
+    });
+  </script>
+</body>
+</html>

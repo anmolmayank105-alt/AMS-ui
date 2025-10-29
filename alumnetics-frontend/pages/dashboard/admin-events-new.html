@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Admin Events - ALUMNETICS | Manage Events</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Card animations */
+        .event-card { 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .event-card:hover { 
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Image zoom effect */
+        .event-card img {
+            transition: transform 0.5s ease;
+        }
+        .event-card:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Gradient overlays for event types */
+        .event-type-webinar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .event-type-workshop { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .event-type-meetup { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .event-type-reunion { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .event-type-hackathon { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .event-type-career { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+        .event-type-conference { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+        .event-type-seminar { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
+        .event-type-default { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+
+        /* Floating animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .float { animation: float 6s ease-in-out infinite; }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        .shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        /* Badge styles */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Glass morphism effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Skeleton loader */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Tab active state */
+        .tab-active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Status badges */
+        .status-open { background: #10b981; }
+        .status-full { background: #ef4444; }
+        .status-upcoming { background: #3b82f6; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Modern Header with Glass Effect -->
+    <header class="glass sticky top-0 z-50 border-b border-white/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="h-20 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center">
+                        <svg class="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-black text-white">Admin Events Hub</div>
+                        <div class="text-sm text-white/80">Manage All Events</div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="openCreateEventModal()" class="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-xl font-bold transition flex items-center space-x-2 shadow-lg">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        <span>Create Event</span>
+                    </button>
+                    <button onclick="goBack()" class="px-5 py-2.5 bg-white/20 hover:bg-white/30 text-white rounded-xl font-medium transition flex items-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        <span>Dashboard</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section with Stats -->
+    <section class="relative overflow-hidden py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h1 class="text-5xl md:text-6xl font-black text-white mb-4 tracking-tight">
+                    Manage Events
+                </h1>
+                <p class="text-xl text-white/90 max-w-2xl mx-auto">
+                    Create, edit, and manage all events for students and alumni
+                </p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div class="glass p-6 rounded-2xl text-center">
+                    <div class="text-4xl font-black text-white mb-2" id="totalEvents">0</div>
+                    <div class="text-white/80 font-medium">Total Events</div>
+                </div>
+                <div class="glass p-6 rounded-2xl text-center">
+                    <div class="text-4xl font-black text-white mb-2" id="upcomingCount">0</div>
+                    <div class="text-white/80 font-medium">Upcoming</div>
+                </div>
+                <div class="glass p-6 rounded-2xl text-center">
+                    <div class="text-4xl font-black text-white mb-2" id="categoriesCount">0</div>
+                    <div class="text-white/80 font-medium">Categories</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters & Search -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
+        <div class="bg-white rounded-3xl shadow-2xl p-6 md:p-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="md:col-span-2">
+                    <div class="relative">
+                        <input id="search" type="text" placeholder="Search events..." 
+                               class="w-full px-5 py-4 pl-12 rounded-2xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 outline-none transition text-lg">
+                        <svg class="w-6 h-6 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <select id="typeFilter" class="w-full px-4 py-4 rounded-2xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 outline-none transition text-lg">
+                        <option value="">All Types</option>
+                        <option value="webinar">Webinar</option>
+                        <option value="workshop">Workshop</option>
+                        <option value="meetup">Meetup</option>
+                        <option value="reunion">Reunion</option>
+                        <option value="hackathon">Hackathon</option>
+                        <option value="career">Career Fair</option>
+                        <option value="conference">Conference</option>
+                        <option value="seminar">Seminar</option>
+                    </select>
+                </div>
+                <div>
+                    <select id="locationFilter" class="w-full px-4 py-4 rounded-2xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 outline-none transition text-lg">
+                        <option value="">All Locations</option>
+                        <option value="online">🌐 Online</option>
+                        <option value="hybrid">📍 Hybrid</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div class="flex gap-2">
+                    <button id="tab-all" class="tab-active px-6 py-3 rounded-xl font-semibold transition">
+                        All Events
+                    </button>
+                    <button id="tab-upcoming" class="px-6 py-3 rounded-xl font-semibold text-gray-600 hover:bg-gray-100 transition">
+                        Upcoming
+                    </button>
+                    <button id="tab-past" class="px-6 py-3 rounded-xl font-semibold text-gray-600 hover:bg-gray-100 transition">
+                        Past
+                    </button>
+                </div>
+                <div class="text-gray-600 font-medium" id="resultsCount">
+                    Showing <span class="text-purple-600 font-bold">0</span> events
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Grid -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pb-16">
+        <!-- Loading State -->
+        <div id="loadingState" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white rounded-3xl overflow-hidden shadow-lg shimmer h-96"></div>
+            <div class="bg-white rounded-3xl overflow-hidden shadow-lg shimmer h-96"></div>
+            <div class="bg-white rounded-3xl overflow-hidden shadow-lg shimmer h-96"></div>
+        </div>
+
+        <!-- Events Container -->
+        <div id="eventsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden">
+            <!-- Events will be dynamically loaded here -->
+        </div>
+
+        <!-- No Events Message -->
+        <div id="noEventsMessage" class="text-center py-16 hidden">
+            <div class="text-6xl mb-4">📅</div>
+            <h3 class="text-2xl font-bold text-gray-700 mb-2">No Events Found</h3>
+            <p class="text-gray-500 mb-6">Start by creating your first event!</p>
+            <button onclick="openCreateEventModal()" class="px-6 py-3 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-700">
+                Create Your First Event
+            </button>
+        </div>
+    </main>
+
+    <!-- Include API service and utilities FIRST before any script that uses them -->
+    <script src="../../assets/js/api-service.js"></script>
+    <script src="../../assets/js/utils.js"></script>
+
+    <script>
+        // Admin Events Page - Simplified for admin control
+        // No filters or tabs needed - admins see ALL events in one grid
+
+        // Load events from backend
+        async function loadBackendEvents() {
+            try {
+                const loadingState = document.getElementById('loadingState');
+                const eventsContainer = document.getElementById('eventsContainer');
+                const noEventsMessage = document.getElementById('noEventsMessage');
+                
+                const response = await window.AlumNeticsAPI.getEvents();
+                console.log('Backend events response:', response);
+                
+                if (response && response.success) {
+                    let events = response.data;
+                    
+                    // Handle different response structures
+                    if (!Array.isArray(events)) {
+                        if (events && events.events && Array.isArray(events.events)) {
+                            events = events.events;
+                        } else {
+                            console.warn('Events data is not an array:', events);
+                            events = [];
+                        }
+                    }
+                    
+                    // Hide loading, show events container
+                    loadingState.classList.add('hidden');
+                    
+                    if (events.length === 0) {
+                        // Show no events message
+                        noEventsMessage.classList.remove('hidden');
+                        eventsContainer.classList.add('hidden');
+                    } else {
+                        // Show events container and hide no events message
+                        eventsContainer.classList.remove('hidden');
+                        noEventsMessage.classList.add('hidden');
+                        
+                        // Clear existing content
+                        eventsContainer.innerHTML = '';
+                        
+                        // Add all events to the container
+                        events.forEach(event => {
+                            const eventCard = createEventCard(event);
+                            eventsContainer.insertAdjacentHTML('beforeend', eventCard);
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading backend events:', error);
+                const loadingState = document.getElementById('loadingState');
+                const noEventsMessage = document.getElementById('noEventsMessage');
+                const eventsContainer = document.getElementById('eventsContainer');
+                
+                loadingState.classList.add('hidden');
+                eventsContainer.classList.add('hidden');
+                noEventsMessage.classList.remove('hidden');
+                noEventsMessage.innerHTML = `
+                    <div class="text-6xl mb-4">⚠️</div>
+                    <h3 class="text-2xl font-bold text-red-600 mb-2">Error Loading Events</h3>
+                    <p class="text-gray-500 mb-6">${error.message || 'Failed to connect to server'}</p>
+                `;
+            }
+        }
+
+        // Create event card HTML
+        function createEventCard(event) {
+            const startDate = new Date(event.startDate);
+            const dateStr = startDate.toLocaleDateString('en-US', { 
+                weekday: 'short', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+            const timeStr = startDate.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit' 
+            });
+            
+            const eventType = (event.eventType || 'webinar').toLowerCase();
+            const location = event.isVirtual ? 'Online' : (event.venue?.city || 'TBA');
+            const attendeeCount = event.attendees ? event.attendees.length : 0;
+            const maxAttendees = event.maxAttendees || '∞';
+            const image = event.coverImage || event.imageUrl || getDefaultImage(eventType);
+            const description = event.description || 'Join us for this amazing event!';
+            
+            const gradients = {
+                webinar: 'from-blue-500 to-indigo-600',
+                workshop: 'from-emerald-500 to-teal-600',
+                meetup: 'from-orange-500 to-rose-600',
+                reunion: 'from-purple-500 to-fuchsia-600',
+                hackathon: 'from-cyan-500 to-sky-600',
+                career: 'from-amber-500 to-yellow-600',
+                default: 'from-indigo-500 to-purple-600'
+            };
+            
+            const gradient = gradients[eventType] || gradients.default;
+            
+            return `
+                <article class="bg-white rounded-2xl border border-gray-100 card-hover overflow-hidden" 
+                         data-type="${eventType}" 
+                         data-location="${location.toLowerCase()}" 
+                         data-date="${event.startDate}" 
+                         data-text="${event.title.toLowerCase()} ${description.toLowerCase()}">
+                    <div class="h-28 bg-gradient-to-r ${gradient} relative" style="${image.startsWith('http') || image.startsWith('data:') ? `background-image: url('${image}'); background-size: cover; background-position: center;` : ''}">
+                        <div class="absolute inset-0 bg-gradient-to-r ${gradient} opacity-80"></div>
+                        <div class="absolute top-4 left-4 bg-white/90 text-gray-800 px-3 py-1 rounded-md text-xs font-semibold shadow">${location}</div>
+                        <div class="absolute bottom-4 left-4 text-white">
+                            <div class="text-xs opacity-90">${dateStr} • ${timeStr}</div>
+                            <h3 class="text-lg font-bold">${event.title}</h3>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <p class="text-gray-600 text-sm">${description.substring(0, 100)}${description.length > 100 ? '...' : ''}</p>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="px-2 py-1 text-xs rounded bg-blue-50 text-blue-700">${event.eventType}</span>
+                            ${event.isVirtual ? '<span class="px-2 py-1 text-xs rounded bg-green-50 text-green-700">Virtual</span>' : ''}
+                        </div>
+                        <div class="mt-5 flex items-center justify-between">
+                            <div class="text-sm text-gray-500">👥 ${attendeeCount}/${maxAttendees} registered</div>
+                            <div class="flex gap-2">
+                                <button onclick="editEvent('${event._id}')" class="px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 flex items-center space-x-1" title="Edit Event">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                    <span>Edit</span>
+                                </button>
+                                <button onclick="deleteEvent('${event._id}')" class="px-3 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 flex items-center space-x-1" title="Delete Event">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    <span>Delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        // Get default image based on event type
+        function getDefaultImage(type) {
+            const images = {
+                webinar: 'https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=400',
+                workshop: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400',
+                meetup: 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=400',
+                reunion: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=400',
+                hackathon: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400',
+                career: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=400'
+            };
+            return images[type] || images.webinar;
+        }
+
+        // Open create event modal/page
+        function openCreateEventModal() {
+            // Redirect to admin dashboard with create event form
+            window.location.href = 'admin-dashboard-fixed.html#create-event';
+        }
+
+        // Edit event
+        async function editEvent(eventId) {
+            // Redirect to admin dashboard with edit event form
+            window.location.href = `admin-dashboard-fixed.html?editEvent=${eventId}`;
+        }
+
+        // Delete event
+        async function deleteEvent(eventId) {
+            if (!confirm('⚠️ Are you sure you want to delete this event?\n\nThis action cannot be undone!')) {
+                return;
+            }
+
+            try {
+                const response = await window.AlumNeticsAPI.deleteEvent(eventId);
+                if (response && response.success) {
+                    alert('✅ Event deleted successfully!');
+                    await loadBackendEvents(); // Reload events
+                } else {
+                    alert('❌ Failed to delete event: ' + (response.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Delete error:', error);
+                alert('❌ Failed to delete event. Please try again.');
+            }
+        }
+
+        // View event details
+        function viewEventDetails(eventId) {
+            alert(`Event details for ${eventId}\n\nFull event details page coming soon!');
+        }
+
+        // Go back to dashboard
+        function goBack() {
+            window.location.href = 'admin-dashboard-fixed.html';
+        }
+
+        // Initialize with backend integration
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🎯 Admin Events page loaded!');
+            console.log('� Current URL:', window.location.href);
+            console.log('�🔌 API available:', typeof window.AlumNeticsAPI !== 'undefined');
+            
+            // Check if API is loaded
+            if (typeof window.AlumNeticsAPI === 'undefined') {
+                console.error('❌ API not loaded! Scripts may be in wrong order.');
+                alert('⚠️ API scripts not loaded properly. Please check browser console (F12) for errors.');
+                const noEventsMessage = document.getElementById('noEventsMessage');
+                const loadingState = document.getElementById('loadingState');
+                if (noEventsMessage && loadingState) {
+                    loadingState.classList.add('hidden');
+                    noEventsMessage.classList.remove('hidden');
+                    noEventsMessage.innerHTML = `
+                        <div class="text-6xl mb-4">⚠️</div>
+                        <h3 class="text-2xl font-bold text-white mb-2">API Not Loaded</h3>
+                        <p class="text-white/80 mb-6">Please check browser console (F12) for errors</p>
+                        <button onclick="location.reload()" class="px-6 py-3 bg-white text-purple-600 rounded-lg font-medium hover:bg-gray-100">
+                            Reload Page
+                        </button>
+                    `;
+                }
+                return;
+            }
+            
+            // Load backend events
+            console.log('📡 Loading backend events...');
+            try {
+                await loadBackendEvents();
+                console.log('✅ Admin events page initialized successfully!');
+            } catch (error) {
+                console.error('❌ Error during initialization:', error);
+                alert('Error loading events: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

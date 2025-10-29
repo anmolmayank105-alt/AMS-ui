@@ -498,7 +498,8 @@ class AlumNeticsAPI {
     async checkDatabaseConnection() {
         try {
             // Direct fetch to health endpoint (not using makeRequest to avoid /api prefix)
-            const response = await fetch('http://localhost:5000/health');
+            const healthURL = this.baseURL.replace('/api', '/health');
+            const response = await fetch(healthURL);
             const data = await response.json();
             return {
                 connected: data.status === 'OK',

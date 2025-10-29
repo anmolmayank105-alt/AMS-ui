@@ -1,10 +1,17 @@
 # Release Notes - Version 1.0.0
 
 **Release Date**: October 29, 2025
+**Last Updated**: October 29, 2025
 
 ## 🎉 Initial Release
 
 This is the first stable release of AlumNetics - Alumni Network Management System.
+
+### Recent Updates
+- ✅ Fixed event image display with default fallbacks
+- ✅ Fixed admin delete permissions
+- ✅ Added proper .gitignore file
+- ✅ Prepared for Vercel deployment
 
 ## ✨ Features
 

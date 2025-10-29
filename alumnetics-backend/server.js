@@ -15,6 +15,9 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
+// Trust proxy - Required for Vercel deployment
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet());
 app.use(compression());

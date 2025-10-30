@@ -482,78 +482,8 @@
                     </div>
                 </div>
 
-                <div class="space-y-4">
-                    <!-- Alumni Card 1 -->
-                    <div class="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl hover:shadow-lg transition-all duration-300 border border-blue-100/50">
-                        <div class="flex items-center space-x-4">
-                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
-                                <span>SM</span>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-gray-900">Sarah Mitchell</h4>
-                                <p class="text-sm text-gray-600">Software Engineer at Google</p>
-                                <p class="text-xs text-gray-500">Computer Science, Class of 2021</p>
-                            </div>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button class="px-4 py-2 bg-white/80 backdrop-blur-sm text-purple-600 border border-purple-200 rounded-xl hover:bg-purple-50 transition-all duration-200 text-sm font-medium">
-                                Connect
-                            </button>
-                            <button class="p-2 bg-white/80 backdrop-blur-sm text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-200">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Alumni Card 2 -->
-                    <div class="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl hover:shadow-lg transition-all duration-300 border border-green-100/50">
-                        <div class="flex items-center space-x-4">
-                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
-                                <span>RK</span>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-gray-900">Rajesh Kumar</h4>
-                                <p class="text-sm text-gray-600">Product Manager at Microsoft</p>
-                                <p class="text-xs text-gray-500">Business Administration, Class of 2020</p>
-                            </div>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button class="px-4 py-2 bg-white/80 backdrop-blur-sm text-green-600 border border-green-200 rounded-xl hover:bg-green-50 transition-all duration-200 text-sm font-medium">
-                                Connect
-                            </button>
-                            <button class="p-2 bg-white/80 backdrop-blur-sm text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-200">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Alumni Card 3 -->
-                    <div class="flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl hover:shadow-lg transition-all duration-300 border border-purple-100/50">
-                        <div class="flex items-center space-x-4">
-                            <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
-                                <span>AP</span>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-gray-900">Anita Patel</h4>
-                                <p class="text-sm text-gray-600">Data Scientist at Amazon</p>
-                                <p class="text-xs text-gray-500">Mathematics, Class of 2022</p>
-                            </div>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button class="px-4 py-2 bg-white/80 backdrop-blur-sm text-purple-600 border border-purple-200 rounded-xl hover:bg-purple-50 transition-all duration-200 text-sm font-medium">
-                                Connect
-                            </button>
-                            <button class="p-2 bg-white/80 backdrop-blur-sm text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-200">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
+                <div class="space-y-4" id="alumniCardsContainer">
+                    <!-- Alumni cards will be loaded dynamically from API -->
                 </div>
 
                 <button class="w-full mt-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-xl transition-all duration-200 shadow-lg">

@@ -32,6 +32,7 @@ app.use('/api', limiter);
 
 // CORS configuration - Allow all origins in development
 const allowedOrigins = [
+  'https://ams-ui-frontend.onrender.com',
   'https://alumnetics-frontend.vercel.app',
   'https://ams-ui-one.vercel.app',
   'https://frontend-two-eosin-67.vercel.app',

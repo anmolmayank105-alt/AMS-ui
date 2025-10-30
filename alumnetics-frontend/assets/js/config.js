@@ -1,5 +1,6 @@
 // API Configuration
 // Points to backend deployment
+// Updated: Force Render redeploy
 
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     // Local development - backend runs on separate port

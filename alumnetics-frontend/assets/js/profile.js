@@ -55,7 +55,8 @@ async function fetchUserProfile() {
             return;
         }
 
-        const response = await fetch('http://localhost:5000/api/profile/me', {
+        const apiBaseUrl = window.API_BASE_URL || 'http://localhost:5000/api';
+        const response = await fetch(`${apiBaseUrl}/profile/me`, {
             headers: {
                 'Authorization': `Bearer ${authToken}`,
                 'Content-Type': 'application/json'
@@ -917,7 +918,8 @@ async function saveAllProfileData() {
     };
 
     try {
-        const response = await fetch('http://localhost:5000/api/profile/me', {
+        const apiBaseUrl = window.API_BASE_URL || 'http://localhost:5000/api';
+        const response = await fetch(`${apiBaseUrl}/profile/me`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

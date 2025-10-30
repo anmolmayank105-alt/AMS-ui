@@ -100,6 +100,12 @@ function displayUserProfile(user) {
 function updateProfileDisplay(user) {
     console.log('Updating comprehensive profile display');
     
+    // Hide loading state and show profile content
+    const loadingState = document.getElementById('loadingState');
+    const profileContent = document.getElementById('profileContent');
+    if (loadingState) loadingState.style.display = 'none';
+    if (profileContent) profileContent.style.display = 'block';
+    
     // Update page title
     document.title = `${user.fullName || 'Student'} Profile - ALUMNETICS`;
     

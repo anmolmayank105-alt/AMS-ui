@@ -301,6 +301,17 @@
   <script src="../../assets/js/profile.js"></script>
   <script src="../../chatbot.js"></script>
   
+  <!-- Initialize Profile on Page Load -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof initProfile === 'function') {
+        initProfile();
+      } else {
+        console.error('initProfile function not found in profile.js');
+      }
+    });
+  </script>
+  
   <!-- Delete Account Functions -->
   <script>
     function confirmDeleteAccount() {

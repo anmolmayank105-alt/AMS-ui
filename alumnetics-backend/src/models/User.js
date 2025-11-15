@@ -9,6 +9,16 @@ const userSchema = new mongoose.Schema({
     trim: true,
     maxLength: [100, 'Full name cannot exceed 100 characters']
   },
+  firstName: {
+    type: String,
+    trim: true,
+    maxLength: [50, 'First name cannot exceed 50 characters']
+  },
+  lastName: {
+    type: String,
+    trim: true,
+    maxLength: [50, 'Last name cannot exceed 50 characters']
+  },
   email: {
     type: String,
     required: [true, 'Email is required'],
@@ -173,11 +183,14 @@ const userSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Indexes for better performance
-userSchema.index({ email: 1 });
-userSchema.index({ role: 1, status: 1 });
-userSchema.index({ institution: 1, graduationYear: 1 });
-userSchema.index({ 'institution.name': 'text', fullName: 'text', skills: 'text' });
+// Indexes for better performance - OPTIMIZED
+userSchema.index({ email: 1 }, { unique: true }); // Email is unique
+userSchema.index({ role: 1, status: 1 }); // Compound index for filtering
+userSchema.index({ 'institution.name': 1, graduationYear: 1 }); // Compound for search
+userSchema.index({ graduationYear: 1, department: 1 }); // For alumni filtering
+userSchema.index({ fullName: 'text', department: 'text', skills: 'text' }); // Text search
+userSchema.index({ createdAt: -1 }); // For sorting by recent users
+userSchema.index({ isVerified: 1, 'privacy.showProfile': 1 }); // For public profiles
 
 // Virtual for full address
 userSchema.virtual('fullAddress').get(function() {
@@ -191,6 +204,15 @@ userSchema.virtual('yearsSinceGraduation').get(function() {
   if (!this.graduationYear) return null;
   return new Date().getFullYear() - this.graduationYear;
 });
+
+// Indexes for performance optimization
+userSchema.index({ email: 1 }, { unique: true }); // Already unique but explicit index
+userSchema.index({ role: 1, status: 1 }); // Compound index for filtering by role and status
+userSchema.index({ 'institution.name': 1 }); // For institution-based searches
+userSchema.index({ graduationYear: 1 }); // For year-based filtering
+userSchema.index({ firstName: 1, lastName: 1 }); // For name searches
+userSchema.index({ createdAt: -1 }); // For sorting by registration date
+userSchema.index({ fullName: 'text', 'institution.name': 'text' }); // Text search index
 
 // Pre-save middleware to hash password
 userSchema.pre('save', async function(next) {
@@ -207,7 +229,8 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
 };
 
 // Method to get public profile
-userSchema.methods.getPublicProfile = function() {
+// viewingSelf: true if user is viewing their own profile (don't apply privacy filters)
+userSchema.methods.getPublicProfile = function(viewingSelf = false) {
   const user = this.toObject();
   
   // Remove sensitive information
@@ -217,10 +240,12 @@ userSchema.methods.getPublicProfile = function() {
   delete user.passwordResetToken;
   delete user.passwordResetExpires;
   
-  // Apply privacy settings
-  if (!user.privacy.showEmail) delete user.email;
-  if (!user.privacy.showPhone) delete user.phone;
-  if (!user.privacy.showAddress) delete user.address;
+  // Apply privacy settings only when viewed by others
+  if (!viewingSelf) {
+    if (!user.privacy.showEmail) delete user.email;
+    if (!user.privacy.showPhone) delete user.phone;
+    if (!user.privacy.showAddress) delete user.address;
+  }
   
   return user;
 };

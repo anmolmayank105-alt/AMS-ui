@@ -7,9 +7,6 @@ const { generateToken, generateRefreshToken } = require('../middleware/auth');
 // Register new user
 const register = async (req, res) => {
   try {
-    console.log('=== Registration Request ===');
-    console.log('Request body:', JSON.stringify(req.body, null, 2));
-    
     const {
       firstName,
       lastName,
@@ -27,8 +24,6 @@ const register = async (req, res) => {
 
     // Validation
     if (!firstName || !email || !password) {
-      console.log('Validation failed: Missing required fields');
-      console.log('firstName:', firstName, 'lastName:', lastName, 'email:', email, 'password:', password ? '***' : undefined);
       return res.status(400).json({
         success: false,
         message: 'First name, email, and password are required'
@@ -72,7 +67,7 @@ const register = async (req, res) => {
     // Add academic information if provided
     if (institution) {
       userData.institution = {
-        name: institution,
+        name: institution.trim(), // Trim whitespace to ensure consistent institution names
         type: 'university'
       };
     }
@@ -87,19 +82,9 @@ const register = async (req, res) => {
     }
 
     // Create new user
-    console.log('Creating user with data:', JSON.stringify(userData, null, 2));
     const user = new User(userData);
     
-    try {
-      await user.save();
-      console.log('User saved successfully');
-    } catch (saveError) {
-      console.error('Error saving user:', saveError.message);
-      if (saveError.errors) {
-        console.error('Validation errors:', JSON.stringify(saveError.errors, null, 2));
-      }
-      throw saveError;
-    }
+    await user.save();
 
     // Generate email verification token
     const verificationToken = crypto.randomBytes(32).toString('hex');
@@ -470,22 +455,16 @@ const resendVerification = async (req, res) => {
 // Get current user profile
 const getProfile = async (req, res) => {
   try {
-    console.log('=== Get Profile Request ===');
-    console.log('User ID from token:', req.user?._id);
-    
     const user = await User.findById(req.user._id);
 
     if (!user) {
-      console.log('User not found in database');
       return res.status(404).json({
         success: false,
         message: 'User not found'
       });
     }
 
-    console.log('User found:', user.email);
-    const profile = user.getPublicProfile();
-    console.log('Profile data:', JSON.stringify(profile, null, 2));
+    const profile = user.getPublicProfile(true); // Pass true because user is viewing their own profile
 
     res.json({
       success: true,

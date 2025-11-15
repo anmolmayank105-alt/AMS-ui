@@ -13,18 +13,8 @@ const getEvents = async (req, res) => {
     // Admin users can see all events, regular users only see published & approved events from their institution
     const filter = {};
     
-    console.log('🔍 Full User Object:', JSON.stringify(req.user, null, 2));
-    console.log('🔍 User Info:', {
-      email: req.user?.email,
-      role: req.user?.role,
-      institution: req.user?.institution?.name,
-      hasUser: !!req.user,
-      hasInstitution: !!req.user?.institution
-    });
-    
     if (req.user && req.user.role === 'admin') {
       // Admin sees all events regardless of status
-      console.log('👑 Admin user - No filter applied');
       // No filter applied
     } else if (req.user) {
       // Regular users only see published and approved events from their institution
@@ -34,13 +24,8 @@ const getEvents = async (req, res) => {
       // Filter by user's institution
       if (req.user.institution && req.user.institution.name) {
         filter.institution = req.user.institution.name;
-        console.log('🎓 Student/Alumni filter:', filter);
-      } else {
-        console.log('⚠️ No institution found for user:', req.user.email);
-        console.log('⚠️ User academic object:', req.user.academic);
       }
     } else {
-      console.log('⚠️ No user authentication - showing all published events');
       filter.status = 'published';
       filter.isApproved = true;
     }
@@ -77,15 +62,17 @@ const getEvents = async (req, res) => {
     
     console.log('🔎 Final filter being applied:', JSON.stringify(filter, null, 2));
     
-    const events = await Event.find(filter)
-      .select('title description eventType startDate endDate venue isVirtual coverImage imageUrl attendeeCount maxAttendees organizer institution status isApproved attendees')
-      .populate('organizer', 'firstName lastName profilePicture')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .lean();
-    
-    const totalEvents = await Event.countDocuments(filter);
+    // OPTIMIZED QUERY with lean() for better performance
+    const [events, totalEvents] = await Promise.all([
+      Event.find(filter)
+        .select('title description eventType startDate endDate venue isVirtual coverImage imageUrl attendeeCount maxAttendees organizer institution status isApproved')
+        .populate('organizer', 'firstName lastName profilePicture')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(), // Use lean() for read-only data - 2-3x faster
+      Event.countDocuments(filter) // Run count in parallel
+    ]);
     
     console.log(`📊 Found ${events.length} events out of ${totalEvents} total`);
     if (events.length > 0) {
@@ -176,8 +163,6 @@ const createEvent = async (req, res) => {
     
     const event = new Event(eventData);
     await event.save();
-    
-    console.log(`✅ Event created by ${req.user.role}: "${event.title}" - Auto-approved: ${event.isApproved}`);
     
     // Populate organizer info
     await event.populate('organizer', 'firstName lastName email');

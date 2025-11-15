@@ -16,6 +16,7 @@ const {
   searchUsers,
   updatePrivacySettings,
   getProfileStats,
+  getAdminStats,
   uploadAvatar,
   changePassword,
   deleteOwnAccount
@@ -25,6 +26,9 @@ const router = express.Router();
 
 // Public routes
 router.get('/search', optionalAuth, searchUsers);
+
+// Stats endpoint - MUST come before /:userId to avoid route collision
+router.get('/stats', authenticate, authorize('admin'), getAdminStats);
 
 // DEBUG: Test endpoint to find specific user
 router.get('/debug/find/:name', async (req, res) => {

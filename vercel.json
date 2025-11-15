@@ -1,8 +1,10 @@
 {
+  "buildCommand": "cd alumnetics-react && npm install && npm run build",
+  "outputDirectory": "alumnetics-react/dist",
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/alumnetics-frontend/$1"
+      "destination": "/index.html"
     }
   ]
 }

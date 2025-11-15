@@ -1,315 +1,266 @@
-# 🎓 ALUMNETICS - Alumni Network Platform
+# Alumnetics - Alumni Management Platform
 
-**A comprehensive full-stack alumni management system connecting students, alumni, and institutions worldwide.**
-
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-6.0+-brightgreen.svg)](https://mongodb.com/)
-[![Express.js](https://img.shields.io/badge/Express.js-4.18+-blue.svg)](https://expressjs.com/)
-[![Socket.io](https://img.shields.io/badge/Socket.io-4.7+-orange.svg)](https://socket.io/)
-
-## 🌟 Features
-
-### 👥 User Management
-- **Multi-role system**: Students, Alumni, Faculty, Employers, Admins
-- **Comprehensive profiles** with academic and professional information
-- **Role-based access control** and permissions
-- **JWT authentication** with refresh tokens
-
-### 📅 Event Management
-- **Event creation and management** by alumni and institutions
-- **Real-time registration** and attendee tracking
-- **Event filtering** by type, location, and date
-- **Automated notifications** and reminders
-
-### 💼 Job Portal
-- **Job posting** by alumni and employers
-- **Advanced search** and filtering capabilities
-- **Application tracking** and management
-- **Career networking** opportunities
-
-### 💬 Real-time Messaging
-- **Socket.io powered** instant messaging
-- **Group conversations** and direct messages
-- **File sharing** and multimedia support
-- **Message history** and search
-
-### 💰 Fundraising Campaigns
-- **Campaign creation** and management
-- **Donation tracking** and reporting
-- **Goal setting** and progress monitoring
-- **Donor recognition** and engagement
-
-### 📊 Analytics Dashboard
-- **User engagement** metrics
-- **Event attendance** analytics
-- **Fundraising performance** tracking
-- **Network growth** visualization
-
-## 🏗️ Technology Stack
-
-### Backend
-- **Node.js** - Runtime environment
-- **Express.js** - Web application framework
-- **MongoDB** - NoSQL database
-- **Mongoose** - MongoDB object modeling
-- **Socket.io** - Real-time communication
-- **JWT** - Authentication tokens
-- **bcrypt** - Password hashing
-
-### Frontend
-- **HTML5** - Markup language
-- **CSS3** - Styling (Tailwind CSS)
-- **JavaScript** - Client-side scripting
-- **Responsive Design** - Mobile-first approach
-- **Progressive Enhancement** - Graceful degradation
-
-### Database Models
-- **Users** - Student/Alumni profiles
-- **Events** - Event management
-- **Jobs** - Job postings
-- **Messages** - Chat system
-- **Fundraising** - Campaign management
-- **Connections** - Network relationships
+A comprehensive full-stack alumni management system built with React, Node.js, Express, and MongoDB. Connect alumni, manage events, facilitate networking, and strengthen community engagement.
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18 or higher
-- MongoDB 6.0 or higher
-- Modern web browser
+- Node.js (v16 or higher)
+- MongoDB Atlas account
+- npm or yarn package manager
 
 ### Installation
 
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd alumnetics
+   cd demo
    ```
 
-2. **Setup Backend**
+2. **Install Backend Dependencies**
    ```bash
    cd alumnetics-backend
    npm install
    ```
 
-3. **Configure Environment**
+3. **Install Frontend Dependencies**
    ```bash
-   # Create .env file with your MongoDB connection string
-   MONGODB_URI=mongodb://localhost:27017/alumnetics
-   JWT_SECRET=your-secret-key
+   cd ../alumnetics-react
+   npm install
+   ```
+
+4. **Configure Environment Variables**
+   
+   Backend (`alumnetics-backend/.env`):
+   ```env
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret_key
    PORT=5000
+   NODE_ENV=production
+   ```
+   
+   Frontend (`alumnetics-react/.env.local`):
+   ```env
+   VITE_API_URL=http://localhost:5000
    ```
 
-4. **Start the Backend Server**
-   ```bash
-   npm start
-   # Server will run on http://localhost:5000
-   ```
+### Running the Application
 
-5. **Open Frontend**
-   ```bash
-   # Open in your browser
-   open alumnetics-frontend/index.html
-   # or serve via a local server for full functionality
-   ```
+**Option 1: Using Scripts (Recommended)**
+```bash
+# From root directory
+scripts\START_FULLSTACK.bat    # Windows Batch
+scripts\START_FULLSTACK.ps1    # PowerShell
+```
+
+**Option 2: Manual Start**
+
+Terminal 1 - Backend:
+```bash
+cd alumnetics-backend
+npm start
+```
+
+Terminal 2 - Frontend:
+```bash
+cd alumnetics-react
+npm run dev
+```
+
+**Access the Application:**
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:5000
 
 ## 📁 Project Structure
 
 ```
-alumnetics/
-├── alumnetics-backend/          # Backend API Server
-│   ├── server.js               # Main server file
-│   ├── models/                 # Database models
-│   ├── controllers/            # Business logic
-│   └── routes/                 # API endpoints
-├── alumnetics-frontend/        # Frontend Application
-│   ├── index.html             # Landing page
-│   ├── assets/                # Static assets
-│   └── pages/                 # Organized page structure
-└── docs/                      # Documentation
+demo/
+├── .documentation/           # Project documentation
+│   ├── archived/            # Historical documentation
+│   ├── guides/              # Development guides
+│   └── optimization/        # Performance reports
+├── scripts/                 # Startup and utility scripts
+├── alumnetics-backend/      # Express.js REST API
+│   ├── api/                # API entry point
+│   ├── scripts/            # Database and utility scripts
+│   └── src/
+│       ├── controllers/    # Business logic
+│       ├── middleware/     # Express middleware
+│       ├── models/         # MongoDB schemas
+│       ├── routes/         # API routes
+│       └── utils/          # Helper utilities
+├── alumnetics-react/        # React frontend (Vite)
+│   ├── public/             # Static assets
+│   └── src/
+│       ├── assets/         # Images, styles
+│       ├── pages/          # React components
+│       ├── services/       # API integration
+│       └── utils/          # Frontend utilities
+└── alumnetics-frontend/     # Static HTML backup
 ```
 
-## 🔗 API Endpoints
+## ✨ Features
+
+### User Management
+- **Multi-role System**: Alumni, Students, Admin
+- **Profile Management**: Comprehensive user profiles with institution, graduation year, department
+- **Privacy Controls**: Customizable profile visibility
+- **Search & Discovery**: Advanced search with filters
+
+### Event Management
+- **Create & Manage Events**: Full CRUD operations
+- **Event Categories**: Workshops, networking, reunions, career fairs, webinars
+- **RSVP System**: Event registration and attendance tracking
+- **Rich Details**: Images, descriptions, locations, dates
+- **Institution-specific**: Filter events by institution
+
+### Networking
+- **Alumni Directory**: Browse and connect with alumni
+- **Student Access**: Students can view and network with alumni
+- **Connection Management**: Send and accept connection requests
+- **Profile Discovery**: Search by institution, year, department
+
+### Administrative Tools
+- **User Management**: Approve, manage, and moderate users
+- **Event Moderation**: Approve and manage events
+- **Analytics Dashboard**: User and event statistics
+- **Bulk Operations**: Efficient management tools
+
+## 🔧 Technology Stack
+
+### Frontend
+- **React 19.1.1**: Modern UI library
+- **Vite 7.1.12**: Fast build tool and dev server
+- **React Router DOM 7.9.5**: Client-side routing
+- **Axios**: HTTP client for API requests
+
+### Backend
+- **Node.js & Express.js**: RESTful API server
+- **MongoDB & Mongoose**: NoSQL database with ODM
+- **JWT Authentication**: Secure token-based auth
+- **bcrypt**: Password hashing
+- **express-validator**: Input validation
+- **compression**: Response compression (46% smaller payloads)
+
+### Performance Optimizations
+- **Database Indexing**: 19 optimized MongoDB indexes
+- **Query Optimization**: lean() queries, parallel execution
+- **Response Compression**: gzip level 6
+- **Code Splitting**: Vendor and page-level chunks
+- **Production Build**: Terser minification, console removal
+
+**Performance Metrics:**
+- Query time: 200ms → 75ms (62% faster)
+- Search time: 350ms → 140ms (60% faster)
+- Payload size: 120KB → 65KB (46% reduction)
+
+## 🔑 API Endpoints
 
 ### Authentication
 - `POST /api/auth/register` - User registration
 - `POST /api/auth/login` - User login
-- `POST /api/auth/refresh` - Refresh JWT token
 - `POST /api/auth/logout` - User logout
+- `GET /api/auth/profile` - Get current user profile
 
 ### Users
 - `GET /api/users` - Get all users (with filters)
 - `GET /api/users/:id` - Get user by ID
 - `PUT /api/users/:id` - Update user profile
-- `DELETE /api/users/:id` - Delete user account
+- `DELETE /api/users/:id` - Delete user (Admin only)
 
 ### Events
-- `GET /api/events` - Get all events
+- `GET /api/events` - Get all events (with filters)
+- `GET /api/events/:id` - Get event by ID
 - `POST /api/events` - Create new event
 - `PUT /api/events/:id` - Update event
-- `POST /api/events/:id/register` - Register for event
-- `DELETE /api/events/:id/register` - Unregister from event
+- `DELETE /api/events/:id` - Delete event
+- `POST /api/events/:id/attend` - RSVP to event
+- `DELETE /api/events/:id/attend` - Cancel RSVP
 
-### Jobs
-- `GET /api/jobs` - Get all job postings
-- `POST /api/jobs` - Create job posting
-- `PUT /api/jobs/:id` - Update job posting
-- `POST /api/jobs/:id/apply` - Apply for job
+See `.documentation/guides/API_INTEGRATION.md` for complete API documentation.
 
-### Messages
-- `GET /api/messages` - Get messages
-- `POST /api/messages` - Send message
-- WebSocket events for real-time messaging
+## 🛠️ Development
 
-### Fundraising
-- `GET /api/fundraising` - Get campaigns
-- `POST /api/fundraising` - Create campaign
-- `POST /api/fundraising/:id/donate` - Make donation
-
-## 🎨 Design Principles
-
-### User Experience
-- **Mobile-first responsive design**
-- **Intuitive navigation** and user flows
-- **Consistent visual language** across all pages
-- **Accessibility compliance** (WCAG guidelines)
-
-### Performance
-- **Optimized API calls** with caching
-- **Lazy loading** for large datasets
-- **Efficient database queries** with indexes
-- **Frontend optimization** for fast loading
-
-### Security
-- **JWT-based authentication** with refresh tokens
-- **Password hashing** with bcrypt
-- **Input validation** and sanitization
-- **CORS configuration** for cross-origin requests
-- **Rate limiting** for API endpoints
-
-## 👥 User Roles & Permissions
-
-### Students
-- Create and manage profile
-- Join events and apply for jobs
-- Message alumni and peers
-- Access career resources
-
-### Alumni
-- All student permissions plus:
-- Post job opportunities
-- Create networking events
-- Mentor current students
-- Organize fundraising campaigns
-
-### Faculty
-- Manage institutional events
-- Access student analytics
-- Coordinate with alumni relations
-- Oversee academic programs
-
-### Employers
-- Post job openings
-- Access talent pool
-- Organize recruitment events
-- Partner with institutions
-
-### Administrators
-- Full system access
-- User management and moderation
-- Platform analytics and reporting
-- System configuration
-
-## 🔧 Development
-
-### Local Development Setup
-1. Install dependencies for both backend and frontend
-2. Configure environment variables
-3. Start MongoDB service
-4. Run backend server with `npm start`
-5. Serve frontend with live server for development
-
-### Code Standards
-- **ESLint** for JavaScript linting
-- **Prettier** for code formatting
-- **JSDoc** for documentation
-- **Git hooks** for pre-commit validation
-
-### Testing
-- **Unit tests** with Jest
-- **Integration tests** for API endpoints
-- **Frontend testing** with browser automation
-- **Performance testing** for scalability
-
-## 🚀 Deployment
-
-### Production Environment
-- **Node.js server** deployment (PM2 recommended)
-- **MongoDB Atlas** for database hosting
-- **CDN** for static asset delivery
-- **SSL/TLS** encryption for security
-
-### Environment Variables
+### Running in Development Mode
 ```bash
-NODE_ENV=production
-MONGODB_URI=mongodb+srv://your-cluster
-JWT_SECRET=secure-random-string
-JWT_REFRESH_SECRET=another-secure-string
-PORT=5000
+# Backend with nodemon
+cd alumnetics-backend
+npm run dev
+
+# Frontend with Vite HMR
+cd alumnetics-react
+npm run dev
 ```
 
-## 📊 Monitoring & Analytics
+### Building for Production
+```bash
+cd alumnetics-react
+npm run build
+```
 
-### Health Monitoring
-- `/health` endpoint for server status
-- Database connection monitoring
-- Real-time error tracking
-- Performance metrics collection
+### Environment Setup
+1. Configure MongoDB Atlas connection
+2. Set up environment variables
+3. Run database scripts if needed (see `alumnetics-backend/scripts/`)
 
-### User Analytics
-- User engagement tracking
-- Event participation metrics
-- Job application analytics
-- Network growth statistics
+### Common Scripts (Backend)
+- `npm start` - Start production server
+- `npm run dev` - Development with nodemon
+- `node scripts/check-user.js` - Verify user data
+- `node scripts/reset-password.js` - Reset user password
+
+## 📚 Documentation
+
+- **Setup Guide**: `.documentation/guides/FULL_API_INTEGRATION_COMPLETE.md`
+- **API Reference**: `.documentation/guides/API_INTEGRATION.md`
+- **Testing Guide**: `.documentation/guides/TESTING.md`
+- **Changelog**: `.documentation/guides/CHANGELOG.md`
+- **Optimization Report**: `.documentation/optimization/OPTIMIZATION_COMPLETE.md`
+- **Future Improvements**: `.documentation/FUTURE_IMPROVEMENTS.md` ⭐ NEW
+
+## 🐛 Troubleshooting
+
+### Backend won't start
+- Check MongoDB connection string in `.env`
+- Verify port 5000 is not in use
+- Ensure all dependencies are installed: `npm install`
+
+### Frontend can't connect to backend
+- Verify `VITE_API_URL` in `.env.local`
+- Check backend is running on correct port
+- Clear browser cache and restart dev server
+
+### Database queries slow
+- Ensure all indexes are created (check console on server start)
+- Review `.documentation/optimization/OPTIMIZATION_COMPLETE.md`
+
+### React server crashes
+- Clear node_modules and reinstall: `rm -rf node_modules && npm install`
+- Check for config syntax errors
+- Restart with: `npm run dev`
+
+## 🔐 Default Test User
+
+**Email**: anmolmayank7@gmail.com  
+**Password**: (set during registration)  
+**Role**: Student  
+**Institution**: Netaji Subhas Engineering College
+
+## 📄 License
+
+MIT License - feel free to use this project for learning and development.
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
 
-## 📝 License
+## 📞 Support
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙋‍♂️ Support
-
-For support, email support@alumnetics.com or join our Slack channel.
-
-## 🎯 Roadmap
-
-### Phase 1 (Current)
-- ✅ Core user management
-- ✅ Event system
-- ✅ Basic messaging
-- ✅ Job portal foundation
-
-### Phase 2 (Next)
-- 📱 Mobile application
-- 🔔 Push notifications
-- 📊 Advanced analytics
-- 🎥 Video conferencing integration
-
-### Phase 3 (Future)
-- 🤖 AI-powered recommendations
-- 🌐 Multi-language support
-- 📈 Advanced reporting tools
-- 🔗 Third-party integrations
+For issues and questions, please check the documentation in `.documentation/guides/` or create an issue in the repository.
 
 ---
 
-**Made with ❤️ by the ALUMNETICS Team**
-
-*Connecting alumni, empowering futures.*
+**Built with ❤️ for alumni communities worldwide**

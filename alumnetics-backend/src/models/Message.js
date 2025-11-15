@@ -302,6 +302,19 @@ messageSchema.methods.markAsRead = function() {
   return Promise.resolve(this);
 };
 
+// Indexes for Message schema performance
+messageSchema.index({ sender: 1, createdAt: -1 }); // For sender's message history
+messageSchema.index({ recipient: 1, createdAt: -1 }); // For recipient's message history
+messageSchema.index({ conversation: 1, createdAt: -1 }); // For conversation messages
+messageSchema.index({ sender: 1, recipient: 1 }); // For direct conversations
+messageSchema.index({ isRead: 1, recipient: 1 }); // For unread message queries
+messageSchema.index({ createdAt: -1 }); // For sorting messages
+
+// Indexes for Conversation schema performance
+conversationSchema.index({ 'participants.user': 1 }); // For finding user conversations
+conversationSchema.index({ isGroup: 1, lastActivity: -1 }); // For listing conversations
+conversationSchema.index({ createdAt: -1 }); // For sorting conversations
+
 // Method to add reaction
 messageSchema.methods.addReaction = function(userId, emoji) {
   // Remove existing reaction from user

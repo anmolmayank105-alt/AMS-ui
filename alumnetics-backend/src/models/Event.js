@@ -173,11 +173,14 @@ const eventSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Indexes
-eventSchema.index({ startDate: 1, status: 1 });
-eventSchema.index({ institution: 1, eventType: 1 });
-eventSchema.index({ organizer: 1 });
-eventSchema.index({ title: 'text', description: 'text', tags: 'text' });
+// Indexes for performance optimization
+eventSchema.index({ startDate: 1, status: 1 }); // Compound for upcoming events
+eventSchema.index({ institution: 1, eventType: 1, status: 1 }); // Compound for filtering
+eventSchema.index({ organizer: 1 }); // For organizer's events
+eventSchema.index({ status: 1, isApproved: 1, startDate: 1 }); // For published events
+eventSchema.index({ 'attendees.user': 1 }); // For user's registered events  
+eventSchema.index({ title: 'text', description: 'text', tags: 'text' }); // Text search
+eventSchema.index({ createdAt: -1 }); // For recent events
 
 // Virtual for attendee count
 eventSchema.virtual('attendeeCount').get(function() {
@@ -202,6 +205,15 @@ eventSchema.virtual('isRegistrationOpen').get(function() {
   const deadline = this.registrationDeadline || this.startDate;
   return this.status === 'published' && now < deadline;
 });
+
+// Indexes for performance optimization
+eventSchema.index({ startDate: 1, status: 1 }); // For filtering upcoming events
+eventSchema.index({ eventType: 1, category: 1 }); // For filtering by type/category
+eventSchema.index({ institution: 1, startDate: 1 }); // For institution-specific events
+eventSchema.index({ organizer: 1 }); // For finding events by organizer
+eventSchema.index({ createdAt: -1 }); // For sorting by creation date
+eventSchema.index({ title: 'text', description: 'text' }); // Text search
+eventSchema.index({ 'attendees.user': 1 }); // For checking registrations
 
 // Method to check if user can register
 eventSchema.methods.canUserRegister = function(userId) {

@@ -176,6 +176,18 @@ const updateProfile = async (req, res) => {
     const userId = req.user._id;
     const updateData = req.body;
     
+    // Trim institution name to ensure consistency
+    if (updateData.institution && updateData.institution.name) {
+      updateData.institution.name = updateData.institution.name.trim();
+    }
+    
+    // If new profile picture is being uploaded, get current user to check for old picture
+    let oldProfilePicture = null;
+    if (updateData.profilePicture) {
+      const currentUser = await User.findById(userId);
+      oldProfilePicture = currentUser.profilePicture;
+    }
+    
     // Remove sensitive fields that shouldn't be updated via this endpoint
     delete updateData.password;
     delete updateData.email; // Email changes should go through separate verification
@@ -190,6 +202,7 @@ const updateProfile = async (req, res) => {
       { new: true, runValidators: true }
     );
 
+    // Old profile picture is automatically replaced in MongoDB when we $set the new value
     if (!updatedUser) {
       return res.status(404).json({
         success: false,
@@ -248,7 +261,7 @@ const searchUsers = async (req, res) => {
     // Get current user's institution for same-institution filtering
     let userInstitution = null;
     if (req.user) {
-      const currentUser = await User.findById(req.user._id).select('institution');
+      const currentUser = await User.findById(req.user._id).select('institution fullName email');
       userInstitution = currentUser?.institution?.name;
     }
     
@@ -275,8 +288,14 @@ const searchUsers = async (req, res) => {
     };
     
     // ENFORCE SAME INSTITUTION: Only show users from the same university
+    // Use case-insensitive regex to handle any case variations
     if (userInstitution) {
-      searchQuery.$and.push({ 'institution.name': userInstitution });
+      searchQuery.$and.push({ 
+        'institution.name': { 
+          $regex: `^${userInstitution.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 
+          $options: 'i' 
+        } 
+      });
     }
     
     // Log search query for debugging
@@ -303,15 +322,32 @@ const searchUsers = async (req, res) => {
     const totalResults = await User.countDocuments(searchQuery);
     
     // Log search results for debugging
-    console.log(`Search for "${q.trim()}" found ${totalResults} total results`);
-    console.log('First 3 results:', users.slice(0, 3).map(u => ({
-      _id: u._id,
-      name: u.fullName,
-      institution: u.institution?.name,
-      privacy: u.privacy,
-      isActive: u.isActive
-    })));
-    console.log('Full first user object:', users[0]);
+    console.log(`\n📊 Search Results:`);
+    console.log(`   Query: "${q.trim()}"`);
+    console.log(`   Total found: ${totalResults}`);
+    console.log(`   Returned: ${users.length}`);
+    console.log(`   User institution filter: "${userInstitution}"`);
+    
+    if (users.length > 0) {
+      console.log('\n   First 3 results:');
+      users.slice(0, 3).forEach((u, i) => {
+        console.log(`   ${i + 1}. ${u.fullName} (${u.email})`);
+        console.log(`      Institution: "${u.institution?.name}"`);
+        console.log(`      Role: ${u.role}`);
+      });
+    } else {
+      console.log('   ⚠️ No results found!');
+      
+      // Debug: Check if there are ANY users with this institution
+      const allUsersInInstitution = await User.countDocuments({ 
+        'institution.name': { 
+          $regex: `^${userInstitution?.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 
+          $options: 'i' 
+        } 
+      });
+      console.log(`   Debug: Total users in "${userInstitution}": ${allUsersInInstitution}`);
+    }
+    console.log('===========================\n');
     
     res.json({
       success: true,
@@ -651,6 +687,37 @@ const deleteUser = async (req, res) => {
   }
 };
 
+// Get admin statistics
+const getAdminStats = async (req, res) => {
+  try {
+    const User = require('../models/User');
+    const Event = require('../models/Event');
+    
+    // Get counts in parallel
+    const [totalUsers, totalEvents, activeEvents, pendingApprovals] = await Promise.all([
+      User.countDocuments(),
+      Event.countDocuments(),
+      Event.countDocuments({ status: 'published' }),
+      Event.countDocuments({ approved: false })
+    ]);
+    
+    res.json({
+      success: true,
+      totalUsers,
+      totalEvents,
+      activeEvents,
+      pendingApprovals
+    });
+    
+  } catch (error) {
+    console.error('Get admin stats error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch statistics'
+    });
+  }
+};
+
 module.exports = {
   getUsers,
   getUser,
@@ -658,6 +725,7 @@ module.exports = {
   searchUsers,
   updatePrivacySettings,
   getProfileStats,
+  getAdminStats,
   changePassword,
   uploadAvatar,
   deleteUser,

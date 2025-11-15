@@ -1,6 +1,45 @@
-const Message = require('../models/Message');
+const { Message, Conversation } = require('../models/Message');
 const User = require('../models/User');
 const { validationResult } = require('express-validator');
+
+// Poll for new messages (Vercel-friendly fallback)
+const pollNewMessages = async (req, res) => {
+  try {
+    const { since } = req.query;
+    const userId = req.user._id;
+    
+    if (!since) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing since parameter'
+      });
+    }
+    
+    const sinceDate = new Date(parseInt(since));
+    
+    const messages = await Message.find({
+      recipient: userId,
+      createdAt: { $gt: sinceDate },
+      isDeleted: false
+    })
+    .populate('sender', 'firstName lastName profilePicture')
+    .sort({ createdAt: 1 })
+    .limit(50)
+    .lean();
+    
+    res.json({
+      success: true,
+      data: { messages }
+    });
+    
+  } catch (error) {
+    console.error('Poll messages error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to poll messages'
+    });
+  }
+};
 
 // Get conversations for current user
 const getConversations = async (req, res) => {
@@ -81,6 +120,12 @@ const getConversations = async (req, res) => {
           }
         }
       },
+      // Filter out conversations where otherUser doesn't exist (deleted users)
+      {
+        $match: {
+          'otherUser._id': { $exists: true, $ne: null }
+        }
+      },
       {
         $project: {
           _id: 1,
@@ -95,6 +140,8 @@ const getConversations = async (req, res) => {
             _id: '$otherUser._id',
             firstName: '$otherUser.firstName',
             lastName: '$otherUser.lastName',
+            fullName: '$otherUser.fullName',
+            email: '$otherUser.email',
             profilePicture: '$otherUser.profilePicture',
             isOnline: '$otherUser.isOnline',
             lastSeen: '$otherUser.lastSeen'
@@ -270,16 +317,36 @@ const sendMessage = async (req, res) => {
     }
     
     // Check if sender can message recipient (privacy settings)
-    if (!recipient.privacy.allowMessages) {
+    if (recipient.privacy && !recipient.privacy.allowMessages) {
       return res.status(403).json({
         success: false,
         message: 'User does not accept messages'
       });
     }
     
+    // Find or create conversation between these two users
+    let conversation;
+    try {
+      conversation = await Conversation.findOrCreateDirectConversation(
+        senderId,
+        recipientId
+      );
+      
+      if (!conversation || !conversation._id) {
+        throw new Error('Failed to create conversation');
+      }
+    } catch (convError) {
+      console.error('❌ Conversation creation error:', convError);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to create conversation'
+      });
+    }
+    
     const messageData = {
       sender: senderId,
       recipient: recipientId,
+      conversation: conversation._id,
       content,
       messageType,
       attachments: attachments || []
@@ -292,24 +359,27 @@ const sendMessage = async (req, res) => {
     await message.populate('sender', 'firstName lastName profilePicture');
     await message.populate('recipient', 'firstName lastName profilePicture');
     
-    // Emit socket event for real-time messaging
+    // Emit socket event for real-time messaging (only if Socket.io available)
     const io = req.app.get('socketio');
     if (io) {
-      // Send to recipient if they're online
-      const recipientSocketId = req.app.get('userSockets')?.get(recipientId.toString());
-      if (recipientSocketId) {
-        io.to(recipientSocketId).emit('newMessage', {
-          message: message.toObject(),
-          conversationId: `${Math.min(senderId, recipientId)}_${Math.max(senderId, recipientId)}`
-        });
-      }
-      
-      // Send confirmation to sender
-      const senderSocketId = req.app.get('userSockets')?.get(senderId.toString());
-      if (senderSocketId) {
-        io.to(senderSocketId).emit('messageSent', {
-          message: message.toObject()
-        });
+      const userSockets = req.app.get('userSockets');
+      if (userSockets) {
+        // Send to recipient if they're online
+        const recipientSocketId = userSockets.get(recipientId.toString());
+        if (recipientSocketId) {
+          io.to(recipientSocketId).emit('newMessage', {
+            message: message.toObject(),
+            conversationId: conversation._id.toString()
+          });
+        }
+        
+        // Send confirmation to sender
+        const senderSocketId = userSockets.get(senderId.toString());
+        if (senderSocketId) {
+          io.to(senderSocketId).emit('messageSent', {
+            message: message.toObject()
+          });
+        }
       }
     }
     
@@ -713,6 +783,7 @@ const getMessageAnalytics = async (req, res) => {
 };
 
 module.exports = {
+  pollNewMessages,
   getConversations,
   getMessages,
   sendMessage,

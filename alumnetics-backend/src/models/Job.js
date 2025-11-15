@@ -229,7 +229,7 @@ jobSchema.virtual('isExpired').get(function() {
   const expiry = this.applicationDeadline || this.expiresAt;
   return expiry && now > expiry;
 });
-
++
 // Virtual for days remaining
 jobSchema.virtual('daysRemaining').get(function() {
   if (this.isExpired) return 0;

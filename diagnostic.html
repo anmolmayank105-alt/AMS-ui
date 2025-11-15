@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AlumNetics API Diagnostic</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #2196F3;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status.success { background: #4CAF50; color: white; }
+        .status.error { background: #f44336; color: white; }
+        .status.pending { background: #FFC107; color: white; }
+        input, button {
+            padding: 10px;
+            margin: 10px 5px 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px 20px;
+        }
+        button:hover { background: #45a049; }
+        .result {
+            margin-top: 10px;
+            padding: 15px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .url-input { width: 500px; }
+        .error-msg { color: #f44336; font-weight: bold; }
+        .success-msg { color: #4CAF50; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 AlumNetics API Diagnostic Tool</h1>
+        <p>This tool helps diagnose the messaging 404 error by testing your API endpoints.</p>
+
+        <!-- Backend URL Input -->
+        <div class="test-section">
+            <h3>1. Backend URL Configuration</h3>
+            <input type="text" id="backendUrl" class="url-input" 
+                   placeholder="https://your-backend.vercel.app" 
+                   value="https://your-backend-url.vercel.app">
+            <p style="font-size: 12px; color: #666;">
+                ℹ️ Enter your actual Vercel backend deployment URL (without /api at the end)
+            </p>
+        </div>
+
+        <!-- Health Check -->
+        <div class="test-section">
+            <h3>2. Backend Health Check</h3>
+            <button onclick="testHealth()">Test /health Endpoint</button>
+            <span id="healthStatus" class="status pending">Not Tested</span>
+            <div id="healthResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- API Root -->
+        <div class="test-section">
+            <h3>3. API Root Check</h3>
+            <button onclick="testApiRoot()">Test /api Endpoint</button>
+            <span id="apiStatus" class="status pending">Not Tested</span>
+            <div id="apiResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Auth Token -->
+        <div class="test-section">
+            <h3>4. Authentication Token</h3>
+            <input type="text" id="authToken" class="url-input" 
+                   placeholder="Paste your JWT token here">
+            <button onclick="saveToken()">Save Token</button>
+            <span id="tokenStatus" class="status pending">No Token</span>
+            <p style="font-size: 12px; color: #666;">
+                ℹ️ Login to your app, open DevTools → Application → Local Storage → Copy 'authToken' value
+            </p>
+        </div>
+
+        <!-- Messages Conversations -->
+        <div class="test-section">
+            <h3>5. Messages Conversations (Requires Auth)</h3>
+            <button onclick="testConversations()">Test /api/messages/conversations</button>
+            <span id="convStatus" class="status pending">Not Tested</span>
+            <div id="convResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Summary -->
+        <div class="test-section" style="border-left-color: #9C27B0;">
+            <h3>📋 Diagnostic Summary</h3>
+            <div id="summary">
+                <p>Run the tests above to see diagnostic results.</p>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="test-section" style="border-left-color: #FF9800;">
+            <h3>📖 How to Fix 404 Errors</h3>
+            <ol>
+                <li><strong>If Health Check fails:</strong> Your backend isn't deployed or URL is wrong</li>
+                <li><strong>If API Root fails:</strong> Backend deployed but routes not configured</li>
+                <li><strong>If Conversations fails with 401:</strong> Auth token expired or invalid</li>
+                <li><strong>If Conversations fails with 404:</strong> Messages route not registered</li>
+                <li><strong>If all pass but messaging still broken:</strong> Frontend environment variables wrong</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        let backendUrl = '';
+        let authToken = '';
+
+        function getBackendUrl() {
+            backendUrl = document.getElementById('backendUrl').value.replace(/\/+$/, '');
+            return backendUrl;
+        }
+
+        function getAuthToken() {
+            if (!authToken) {
+                authToken = document.getElementById('authToken').value;
+            }
+            return authToken;
+        }
+
+        function saveToken() {
+            authToken = document.getElementById('authToken').value;
+            if (authToken) {
+                document.getElementById('tokenStatus').className = 'status success';
+                document.getElementById('tokenStatus').textContent = 'Token Saved';
+            }
+        }
+
+        async function testHealth() {
+            const url = `${getBackendUrl()}/health`;
+            const statusEl = document.getElementById('healthStatus');
+            const resultEl = document.getElementById('healthResult');
+
+            statusEl.className = 'status pending';
+            statusEl.textContent = 'Testing...';
+            resultEl.style.display = 'block';
+            resultEl.textContent = `GET ${url}\nWaiting for response...`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    statusEl.className = 'status success';
+                    statusEl.textContent = `✅ ${response.status} OK`;
+                    resultEl.textContent = `✅ Backend is running!\n\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.textContent = '❌ Failed';
+                resultEl.textContent = `❌ Error: ${error.message}\n\nPossible causes:\n- Backend not deployed\n- Wrong URL\n- CORS issue`;
+            }
+            updateSummary();
+        }
+
+        async function testApiRoot() {
+            const url = `${getBackendUrl()}/api`;
+            const statusEl = document.getElementById('apiStatus');
+            const resultEl = document.getElementById('apiResult');
+
+            statusEl.className = 'status pending';
+            statusEl.textContent = 'Testing...';
+            resultEl.style.display = 'block';
+            resultEl.textContent = `GET ${url}\nWaiting for response...`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    statusEl.className = 'status success';
+                    statusEl.textContent = `✅ ${response.status} OK`;
+                    resultEl.textContent = `✅ API is accessible!\n\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.textContent = '❌ Failed';
+                resultEl.textContent = `❌ Error: ${error.message}\n\nPossible causes:\n- API routes not configured\n- Backend deployment issue`;
+            }
+            updateSummary();
+        }
+
+        async function testConversations() {
+            const token = getAuthToken();
+            if (!token) {
+                alert('Please enter and save your auth token first!');
+                return;
+            }
+
+            const url = `${getBackendUrl()}/api/messages/conversations`;
+            const statusEl = document.getElementById('convStatus');
+            const resultEl = document.getElementById('convResult');
+
+            statusEl.className = 'status pending';
+            statusEl.textContent = 'Testing...';
+            resultEl.style.display = 'block';
+            resultEl.textContent = `GET ${url}\nAuthorization: Bearer ${token.substring(0, 20)}...\nWaiting for response...`;
+
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const data = await response.json();
+                
+                if (response.status === 401) {
+                    statusEl.className = 'status error';
+                    statusEl.textContent = '❌ 401 Unauthorized';
+                    resultEl.textContent = `❌ Authentication failed!\n\n${JSON.stringify(data, null, 2)}\n\nYour token is invalid or expired. Please login again and get a fresh token.`;
+                } else if (response.status === 404) {
+                    statusEl.className = 'status error';
+                    statusEl.textContent = '❌ 404 Not Found';
+                    resultEl.textContent = `❌ THIS IS THE ISSUE!\n\n${JSON.stringify(data, null, 2)}\n\nThe /api/messages/conversations endpoint doesn't exist!\n\nFix:\n1. Check backend routes are registered\n2. Verify messageController.getConversations exists\n3. Check backend deployment logs`;
+                } else if (response.ok) {
+                    statusEl.className = 'status success';
+                    statusEl.textContent = `✅ ${response.status} OK`;
+                    resultEl.textContent = `✅ Conversations endpoint works!\n\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.textContent = '❌ Failed';
+                resultEl.textContent = `❌ Error: ${error.message}\n\nPossible causes:\n- Network error\n- CORS issue\n- Backend not responding`;
+            }
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const health = document.getElementById('healthStatus').textContent;
+            const api = document.getElementById('apiStatus').textContent;
+            const conv = document.getElementById('convStatus').textContent;
+            const token = document.getElementById('tokenStatus').textContent;
+
+            let summary = '<p><strong>Current Status:</strong></p><ul>';
+            summary += `<li>Backend Health: ${health}</li>`;
+            summary += `<li>API Accessibility: ${api}</li>`;
+            summary += `<li>Auth Token: ${token}</li>`;
+            summary += `<li>Messages Endpoint: ${conv}</li>`;
+            summary += '</ul>';
+
+            // Recommendations
+            if (health.includes('❌')) {
+                summary += '<p class="error-msg">⚠️ Critical: Backend is not accessible! Deploy your backend to Vercel first.</p>';
+            } else if (api.includes('❌')) {
+                summary += '<p class="error-msg">⚠️ Backend running but API routes not working. Check backend deployment.</p>';
+            } else if (conv.includes('404')) {
+                summary += '<p class="error-msg">⚠️ This is your messaging 404 error! Messages route not found on backend.</p>';
+            } else if (conv.includes('401')) {
+                summary += '<p class="error-msg">⚠️ Backend OK but authentication failing. Get a fresh token.</p>';
+            } else if (health.includes('✅') && api.includes('✅') && conv.includes('✅')) {
+                summary += '<p class="success-msg">✅ All tests passed! Your backend is working correctly!</p>';
+                summary += '<p>If messaging still broken in your app, the issue is frontend environment variables.</p>';
+                summary += '<p><strong>Fix:</strong> Set VITE_API_URL in Vercel dashboard to: <code>' + getBackendUrl() + '/api</code></p>';
+            }
+
+            document.getElementById('summary').innerHTML = summary;
+        }
+
+        // Load saved values from localStorage
+        window.onload = function() {
+            const savedUrl = localStorage.getItem('diagnostic_backend_url');
+            const savedToken = localStorage.getItem('diagnostic_auth_token');
+            
+            if (savedUrl) {
+                document.getElementById('backendUrl').value = savedUrl;
+            }
+            if (savedToken) {
+                document.getElementById('authToken').value = savedToken;
+                authToken = savedToken;
+                document.getElementById('tokenStatus').className = 'status success';
+                document.getElementById('tokenStatus').textContent = 'Token Loaded';
+            }
+        };
+
+        // Save values to localStorage
+        window.onbeforeunload = function() {
+            localStorage.setItem('diagnostic_backend_url', document.getElementById('backendUrl').value);
+            localStorage.setItem('diagnostic_auth_token', document.getElementById('authToken').value);
+        };
+    </script>
+</body>
+</html>
